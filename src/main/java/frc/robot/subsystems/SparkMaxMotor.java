@@ -6,14 +6,19 @@ package frc.robot.subsystems;
 
 import java.text.DecimalFormat;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.SparkRelativeEncoder;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+//import com.revrobotics.SparkRelativeEncoder;
+//import com.revrobotics.CANSparkBase.ControlType;
+//import com.revrobotics.CANSparkBase.IdleMode;
+//import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+//import com.revrobotics.servohub.ServoHub.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,38 +26,41 @@ import frc.robot.TuningVariables;
 
 public class SparkMaxMotor extends SubsystemBase {
   private final String m_name;
-  private final CANSparkMax m_CANSparkMax;
-  private final MotorType m_motorType;
+  private final SparkMax m_CANSparkMax;
+  //private final MotorType m_motorType;
   private final RelativeEncoder m_RelativeEncoder;
-  private final SparkPIDController m_SparkPIDController;
+  private final SparkClosedLoopController m_SparkPIDController;
   private final double m_encoderRotationsPerFinalRotation;
   private double m_zeroEncoderPosition;
   private int m_SmartMotionSlot = 0;
   private DecimalFormat df2 = new DecimalFormat("#.00"); // for 2 digits after decimal in printouts
   private double m_desiredPosition = 0.0;
+  private SparkMaxConfig config = new SparkMaxConfig();
   
   /** Creates a new SparkMaxBrushless. */
-  public SparkMaxMotor(int canId, double encoderRotationsPerFinalRotation, String name){
-    this(canId, encoderRotationsPerFinalRotation, name, null, null, 0);
-  }
-  public SparkMaxMotor(int canId, double encoderRotationsPerFinalRotation, String name, MotorType motorType, SparkRelativeEncoder.Type encoderType, int encoderCountsPerRevolution) {
+  /*public SparkMaxMotor(int canId, double encoderRotationsPerFinalRotation, String name){
+    this(canId, encoderRotationsPerFinalRotation, name);
+  }*/
+  public SparkMaxMotor(int canId, double encoderRotationsPerFinalRotation, String name) {
     m_name = name;
     m_encoderRotationsPerFinalRotation =  encoderRotationsPerFinalRotation;
-    if (motorType == null){
+    /*if (motorType == null){
       motorType = MotorType.kBrushless;
-    }
-    m_CANSparkMax = new CANSparkMax(canId, motorType);
-    m_CANSparkMax.restoreFactoryDefaults();
-    m_motorType = motorType;
+    }*/
+    m_CANSparkMax = new SparkMax(canId, MotorType.kBrushless);
+    m_CANSparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    /*m_motorType = motorType;
     if (motorType == MotorType.kBrushless){
       m_RelativeEncoder = m_CANSparkMax.getEncoder();
     } else if (encoderType != null) {
       m_RelativeEncoder = m_CANSparkMax.getEncoder(encoderType, encoderCountsPerRevolution);
     } else {
       m_RelativeEncoder = null;  // force null ptr exception if we try to use encoder, kNoEncoder might be better
-    }
+    }*/
+    
+    m_RelativeEncoder = m_CANSparkMax.getEncoder();
     SmartDashboard.putString("relative encoder type = ", m_RelativeEncoder.toString());
-    m_SparkPIDController = m_CANSparkMax.getPIDController();
+    m_SparkPIDController = m_CANSparkMax.getClosedLoopController();
     setCurrentPositionAsZeroEncoderPosition();
   }
 
@@ -63,9 +71,9 @@ public class SparkMaxMotor extends SubsystemBase {
     return m_encoderRotationsPerFinalRotation;
   }
   public MotorType getMotorType(){
-    return m_motorType;
+    return MotorType.kBrushless;
   }
-  public CANSparkMax getSparkMax(){
+  public SparkMax getSparkMax(){
     return m_CANSparkMax;
   }
 
@@ -75,9 +83,11 @@ public class SparkMaxMotor extends SubsystemBase {
    */
   public void setToBrakeOnIdle(boolean brakeOnIdle){
     if (brakeOnIdle){
-      m_CANSparkMax.setIdleMode(IdleMode.kBrake);
-    }else{
-      m_CANSparkMax.setIdleMode(IdleMode.kCoast);
+      config
+          .idleMode(IdleMode.kBrake);
+    }else{ 
+      config
+          .idleMode(IdleMode.kCoast);
     }
   }
 
@@ -180,12 +190,11 @@ public class SparkMaxMotor extends SubsystemBase {
   }
   // We use encoder-centric PID parameters so we can copy them from test/tuning program
   public void setPIDCoefficients(double kP, double kI, double kD, double kIZone, double kFeedForward, double kMinOutput, double kMaxOutput) {
-    m_SparkPIDController.setP(kP);
-    m_SparkPIDController.setI(kI);
-    m_SparkPIDController.setD(kD);
-    m_SparkPIDController.setIZone(kIZone);
-    m_SparkPIDController.setFF(kFeedForward);
-    m_SparkPIDController.setOutputRange(kMinOutput, kMaxOutput);
+    config.closedLoop
+        .pid(kP, kI, kD)
+        .iZone(kIZone)
+        .velocityFF(kFeedForward)
+        .outputRange(kMinOutput, kMaxOutput);
   }
   public class PIDCoefficients {
     public double m_kP;
@@ -220,7 +229,7 @@ public class SparkMaxMotor extends SubsystemBase {
       //double desiredEncoderPosition = m_desiredPosition * m_encoderRotationsPerFinalRotation + m_zeroEncoderPosition;
       double desiredEncoderPosition = finalPositionToEncoderPosition(m_desiredPosition);
       System.out.println("Going from encoder position " + df2.format(m_RelativeEncoder.getPosition()) + " to " + df2.format(desiredEncoderPosition));
-      m_SparkPIDController.setReference(desiredEncoderPosition, CANSparkMax.ControlType.kSmartMotion);
+      m_SparkPIDController.setReference(desiredEncoderPosition, SparkMax.ControlType.kSmartMotion);
     }
     /**
      * Stop pushing backward when structure has rotated down to or below minFinalPosition
