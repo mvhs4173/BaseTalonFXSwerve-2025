@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.0,
+        "y": 7.5
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.1969112668645112,
+        "y": 7.541778735484176
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.79,
+        "y": 7.57
+      },
+      "prevControl": {
+        "x": 1.6909323355842436,
+        "y": 7.55637656918368
+      },
+      "nextControl": {
+        "x": 1.9094391450018229,
+        "y": 7.586424843951747
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.79,
+        "y": 7.68230877403267
+      },
+      "prevControl": {
+        "x": 1.6934985835682657,
+        "y": 7.685948516182268
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Blue1AmpShotAutoPaths",
+  "previewStartingState": {
+    "rotation": 89.30939836463553,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
