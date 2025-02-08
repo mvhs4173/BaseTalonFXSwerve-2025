@@ -8,8 +8,10 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,7 +35,8 @@ public class Gyro extends SubsystemBase {
       m_pigeon = null;
       m_usePigeon = false;
     }
-    m_navX = new AHRS(SPI.Port.kMXP);
+    //m_navX = new AHRS(SPI.Port.kMXP);
+    m_navX = new AHRS(NavXComType.kMXP_SPI);
     calibrateNavX();
     // m_usePigeon = Constants.Swerve.usePigeon;
     setYaw(0.0);
@@ -129,7 +132,7 @@ public class Gyro extends SubsystemBase {
     // This method will be called once per scheduler run
     if (TuningVariables.debugLevel.getNumber() >= 5){
       double navXYaw = getYawNavX();
-      StatusSignal<Double> rawPigeonYaw = null;
+      StatusSignal<Angle> rawPigeonYaw = null;
       double pigeonYaw = 0.0;
       StatusCode pigeonStatus = null;
       if (m_pigeon != null){
