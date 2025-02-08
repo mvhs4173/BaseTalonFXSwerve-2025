@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import java.text.DecimalFormat;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 //import com.revrobotics.SparkRelativeEncoder;
 //import com.revrobotics.CANSparkBase.ControlType;
@@ -16,10 +18,12 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.RelativeEncoder;
 //import com.revrobotics.servohub.ServoHub.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
+import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.TuningVariables;
@@ -32,10 +36,11 @@ public class SparkMaxMotor extends SubsystemBase {
   private final SparkClosedLoopController m_SparkPIDController;
   private final double m_encoderRotationsPerFinalRotation;
   private double m_zeroEncoderPosition;
-  private int m_SmartMotionSlot = 0;
+  private ClosedLoopSlot m_SmartMotionSlot;
   private DecimalFormat df2 = new DecimalFormat("#.00"); // for 2 digits after decimal in printouts
   private double m_desiredPosition = 0.0;
-  private SparkMaxConfig config = new SparkMaxConfig();
+  private SparkMaxConfig m_config = new SparkMaxConfig();
+
   
   /** Creates a new SparkMaxBrushless. */
   /*public SparkMaxMotor(int canId, double encoderRotationsPerFinalRotation, String name){
@@ -48,7 +53,7 @@ public class SparkMaxMotor extends SubsystemBase {
       motorType = MotorType.kBrushless;
     }*/
     m_CANSparkMax = new SparkMax(canId, MotorType.kBrushless);
-    m_CANSparkMax.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    configure();
     /*m_motorType = motorType;
     if (motorType == MotorType.kBrushless){
       m_RelativeEncoder = m_CANSparkMax.getEncoder();
@@ -62,6 +67,10 @@ public class SparkMaxMotor extends SubsystemBase {
     SmartDashboard.putString("relative encoder type = ", m_RelativeEncoder.toString());
     m_SparkPIDController = m_CANSparkMax.getClosedLoopController();
     setCurrentPositionAsZeroEncoderPosition();
+  }
+
+  private void configure(){
+    m_CANSparkMax.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**
@@ -83,12 +92,13 @@ public class SparkMaxMotor extends SubsystemBase {
    */
   public void setToBrakeOnIdle(boolean brakeOnIdle){
     if (brakeOnIdle){
-      config
+      m_config
           .idleMode(IdleMode.kBrake);
     }else{ 
-      config
+      m_config
           .idleMode(IdleMode.kCoast);
     }
+    configure();
   }
 
   // TODO: use 	enableSoftLimit​(CANSparkBase.SoftLimitDirection direction, boolean enable)
@@ -116,7 +126,9 @@ public class SparkMaxMotor extends SubsystemBase {
     if (follower.getMotorType() != getMotorType()){
       throw new Error("follower's motor type must match the leader's");
     } else {
-      follower.getSparkMax().follow(m_CANSparkMax, invert);
+      m_config
+          .follow(m_CANSparkMax, invert);
+      configure();
     }
   }
 
@@ -190,7 +202,7 @@ public class SparkMaxMotor extends SubsystemBase {
   }
   // We use encoder-centric PID parameters so we can copy them from test/tuning program
   public void setPIDCoefficients(double kP, double kI, double kD, double kIZone, double kFeedForward, double kMinOutput, double kMaxOutput) {
-    config.closedLoop
+    m_config.closedLoop
         .pid(kP, kI, kD)
         .iZone(kIZone)
         .velocityFF(kFeedForward)
@@ -222,10 +234,19 @@ public class SparkMaxMotor extends SubsystemBase {
   public void doSmartMotion(double desiredPosition, double maxVelocity, double minVelocity,
     double maxAcceleration, double allowedClosedLoopError){
       m_desiredPosition = desiredPosition;
-      m_SparkPIDController.setSmartMotionMaxVelocity(maxVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
+      /*m_SparkPIDController.setSmartMotionMaxVelocity(maxVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
       m_SparkPIDController.setSmartMotionMinOutputVelocity(minVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
       m_SparkPIDController.setSmartMotionMaxAccel(maxAcceleration * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
-      m_SparkPIDController.setSmartMotionAllowedClosedLoopError(allowedClosedLoopError/m_encoderRotationsPerFinalRotation, m_SmartMotionSlot); // what units?
+      m_SparkPIDController.setSmartMotionAllowedClosedLoopError(allowedClosedLoopError/m_encoderRotationsPerFinalRotation, m_SmartMotionSlot); // what units?*/
+      m_config.closedLoop
+          .smartMotion.maxVelocity(maxVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
+      m_config.closedLoop
+          .smartMotion.minOutputVelocity(minVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
+      m_config.closedLoop
+          .smartMotion.maxAcceleration(maxAcceleration * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
+      m_config.closedLoop
+          .smartMotion.allowedClosedLoopError(allowedClosedLoopError/m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);  
+      configure();
       //double desiredEncoderPosition = m_desiredPosition * m_encoderRotationsPerFinalRotation + m_zeroEncoderPosition;
       double desiredEncoderPosition = finalPositionToEncoderPosition(m_desiredPosition);
       System.out.println("Going from encoder position " + df2.format(m_RelativeEncoder.getPosition()) + " to " + df2.format(desiredEncoderPosition));
@@ -238,8 +259,9 @@ public class SparkMaxMotor extends SubsystemBase {
      */
     public void setAndEnableLowerSoftLimit(double minFinalPosition){
       double minEncoderPosition = finalPositionToEncoderPosition(minFinalPosition);
-      m_CANSparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float)minEncoderPosition);
-      m_CANSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+      m_config.softLimit.reverseSoftLimit((float)minEncoderPosition);
+      m_config.softLimit.reverseSoftLimitEnabled(true);
+      configure();
     }
     /**
      * Stop pushing forward when structure has rotated up to or past maxFinalPosition
@@ -248,24 +270,25 @@ public class SparkMaxMotor extends SubsystemBase {
      */
     public void setAndEnableUpperSoftLimit(double maxFinalPosition){
       double maxEncoderPosition = finalPositionToEncoderPosition(maxFinalPosition);
-      m_CANSparkMax.setSoftLimit(SoftLimitDirection.kForward, (float)maxEncoderPosition);
-      m_CANSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+      m_config.softLimit.forwardSoftLimit((float)maxEncoderPosition);
+      m_config.softLimit.forwardSoftLimitEnabled(true);
+      configure();
     }
     /**
      * Stop respecting soft limits in both directions.  Intended for emergency use or for testing.
      */
     public void disableSoftLimits(){
       System.out.println(m_name + ": disabling soft limits on position");
-      m_CANSparkMax.enableSoftLimit(SoftLimitDirection.kForward, false);
-      m_CANSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, false);
+      m_config.softLimit.forwardSoftLimitEnabled(false);
+      m_config.softLimit.reverseSoftLimitEnabled(false);
     }
     /**
      * Resume respecting soft limits in both directions
      */
     public void enableSoftLimits(){
-      System.out.println(m_name + ": enabling soft limits on position");
-      m_CANSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-      m_CANSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true); 
+      System.out.println(m_name + ": enabling soft limits on position"); 
+      m_config.softLimit.forwardSoftLimitEnabled(true);
+      m_config.softLimit.reverseSoftLimitEnabled(true);
     }
     /**
      * Not implemented yet.  The intent is to be still, even if some force is
