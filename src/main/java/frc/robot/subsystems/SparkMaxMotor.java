@@ -30,7 +30,7 @@ import frc.robot.TuningVariables;
 
 public class SparkMaxMotor extends SubsystemBase {
   private final String m_name;
-  private final SparkMax m_CANSparkMax;
+  private final SparkMax m_SparkMax;
   //private final MotorType m_motorType;
   private final RelativeEncoder m_RelativeEncoder;
   private final SparkClosedLoopController m_SparkPIDController;
@@ -52,7 +52,7 @@ public class SparkMaxMotor extends SubsystemBase {
     /*if (motorType == null){
       motorType = MotorType.kBrushless;
     }*/
-    m_CANSparkMax = new SparkMax(canId, MotorType.kBrushless);
+    m_SparkMax = new SparkMax(canId, MotorType.kBrushless);
     configure();
     /*m_motorType = motorType;
     if (motorType == MotorType.kBrushless){
@@ -63,14 +63,14 @@ public class SparkMaxMotor extends SubsystemBase {
       m_RelativeEncoder = null;  // force null ptr exception if we try to use encoder, kNoEncoder might be better
     }*/
     
-    m_RelativeEncoder = m_CANSparkMax.getEncoder();
+    m_RelativeEncoder = m_SparkMax.getEncoder();
     SmartDashboard.putString("relative encoder type = ", m_RelativeEncoder.toString());
-    m_SparkPIDController = m_CANSparkMax.getClosedLoopController();
+    m_SparkPIDController = m_SparkMax.getClosedLoopController();
     setCurrentPositionAsZeroEncoderPosition();
   }
 
   private void configure(){
-    m_CANSparkMax.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_SparkMax.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**
@@ -83,7 +83,7 @@ public class SparkMaxMotor extends SubsystemBase {
     return MotorType.kBrushless;
   }
   public SparkMax getSparkMax(){
-    return m_CANSparkMax;
+    return m_SparkMax;
   }
 
   /**
@@ -127,7 +127,7 @@ public class SparkMaxMotor extends SubsystemBase {
       throw new Error("follower's motor type must match the leader's");
     } else {
       m_config
-          .follow(m_CANSparkMax, invert);
+          .follow(m_SparkMax, invert);
       configure();
     }
   }
@@ -181,7 +181,7 @@ public class SparkMaxMotor extends SubsystemBase {
     if (TuningVariables.debugLevel.getNumber() >= 5.0) {
       SmartDashboard.putNumber(getName() + " pos", getPosition());
       SmartDashboard.putNumber(getName() + " vel", getVelocity());
-      SmartDashboard.putNumber(getName() + " amps", m_CANSparkMax.getOutputCurrent());
+      SmartDashboard.putNumber(getName() + " amps", m_SparkMax.getOutputCurrent());
       SmartDashboard.putNumber(getName() + " desired pos", m_desiredPosition);
     }
   }
@@ -190,10 +190,10 @@ public class SparkMaxMotor extends SubsystemBase {
    * @param percent: desired 'speed' on a scale of -1.0 to 1.0
    */
   public void setVoltage(double voltage){
-    m_CANSparkMax.setVoltage(voltage);
+    m_SparkMax.setVoltage(voltage);
   }
   public void setPercentSpeed(double percent){
-    m_CANSparkMax.set(percent);
+    m_SparkMax.set(percent);
   }
   public void setRPM(double rpm){
     double encoderRpm = rpm * m_encoderRotationsPerFinalRotation;
