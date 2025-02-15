@@ -26,6 +26,7 @@ import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.Shooter2;
 import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.TestMotorPair;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist2;
 
@@ -79,6 +80,7 @@ public class RobotContainer {
     private final ClimberServo m_climberServo = new ClimberServo(0);
     private final Vision m_Vision = new Vision("AprilTagCamera");
     private final Gyro m_Gyro = new Gyro(false);
+    private final TestMotorPair m_TestMotorPair = new TestMotorPair(21, 11, false);
     /* Autos */
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -180,6 +182,7 @@ public class RobotContainer {
         JoystickButton armRightStick = new JoystickButton(m_armController, XboxController.Button.kRightStick.value);
         JoystickButton driveA = new JoystickButton(m_driveController, XboxController.Button.kA.value);
         JoystickButton driveY = new JoystickButton(m_driveController, XboxController.Button.kY.value);
+        JoystickButton driveB = new JoystickButton(m_driveController, XboxController.Button.kB.value);
 
         Trigger armLeftTrigger = new Trigger(() -> m_armController.getLeftTriggerAxis() > 0.5 );
         Trigger armRightTrigger = new Trigger(() -> m_armController.getRightTriggerAxis() > 0.5);
@@ -204,6 +207,8 @@ public class RobotContainer {
         int aprilTagTargetId = 4;
         driveA.whileTrue(new AimAtAprilTag(m_Vision, s_Swerve, 14, 1, aprilTagTargetId)); //allow 1 degree of error
         driveY.onTrue(new InstantCommand(() -> m_Gyro.setYaw(0.0)));
+        driveB.onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.1)));
+        driveB.onFalse(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.0)));
         // Now for climbing control.  Climbing requires much more power in shoulder than shooting does.
         // Y button, while held down, causes arm to rise to vertical.
         armY.whileTrue(new goToClimbPosition(m_shoulder, m_wrist2));
