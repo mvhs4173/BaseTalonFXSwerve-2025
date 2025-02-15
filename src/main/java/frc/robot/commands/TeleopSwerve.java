@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -17,6 +18,7 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(1.2); //might need adjustment once more of the robot is mounted
 
     public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
         this.s_Swerve = s_Swerve;
@@ -41,7 +43,7 @@ public class TeleopSwerve extends Command {
 
         translationVal = signedPower(translationVal, 1.0);
         strafeVal = signedPower(strafeVal, 1.0);
-        rotationVal = signedPower(rotationVal, 1.0);
+        rotationVal = rotLimiter.calculate(signedPower(rotationVal, 1.0));
 
         /* Drive */
         s_Swerve.drive(

@@ -42,7 +42,7 @@ public class Gyro extends SubsystemBase {
     setYaw(0.0);
   
   }
-
+ 
   public void setYaw(double degreesCcw){
     if (m_pigeon != null) {
       m_pigeon.reset();
@@ -130,7 +130,7 @@ public class Gyro extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (TuningVariables.debugLevel.getNumber() >= 5){
+    if (TuningVariables.debugLevel.getNumber() >= 0.0){
       double navXYaw = getYawNavX();
       StatusSignal<Angle> rawPigeonYaw = null;
       double pigeonYaw = 0.0;
@@ -140,7 +140,7 @@ public class Gyro extends SubsystemBase {
         pigeonYaw = getYawPigeon2();
         pigeonStatus = rawPigeonYaw.getStatus();
       }
-      if (TuningVariables.debugLevel.getNumber() >= 4.0) {
+      if (TuningVariables.debugLevel.getNumber() >= 0.0) {
         SmartDashboard.putNumber("Pigeon Yaw", pigeonYaw);
         SmartDashboard.putNumber("NavX Yaw", navXYaw);
         SmartDashboard.putNumber("Gyro Differnce", pigeonYaw - navXYaw);
@@ -148,7 +148,7 @@ public class Gyro extends SubsystemBase {
 
       if (m_pigeon != null){
         var pigeonError = m_pigeon.getFaultField();
-        if (TuningVariables.debugLevel.getNumber() >= 4.0){
+        if (TuningVariables.debugLevel.getNumber() >= 0.0){
           SmartDashboard.putString("Pigeon Error Status", pigeonStatus.toString());
           SmartDashboard.putString("Pigeon Fault Field", pigeonError.toString());
           SmartDashboard.putString("rawPigeonYaw", rawPigeonYaw.toString());
