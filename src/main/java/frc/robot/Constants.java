@@ -271,7 +271,7 @@ public final class Constants {
             public static final String name = "Lower Shooter2 Roller";
         }
         public static class Indexer{ // a NEO 550
-            public static final int kCANId = 42;
+            public static final int kCANId = 40;
             public static final MotorType kMotorType = MotorType.kBrushless;
             public static final double encoderRotationsPerFinalRotation = 10.0 / 1.0 // planetary gearbox
                                                                         * 22.0 / 48.0; // sprockets

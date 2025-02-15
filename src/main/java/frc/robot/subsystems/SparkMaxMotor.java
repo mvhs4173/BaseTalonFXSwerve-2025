@@ -162,6 +162,10 @@ public class SparkMaxMotor extends SubsystemBase {
     return m_RelativeEncoder.getVelocity() / m_encoderRotationsPerFinalRotation;
   }
 
+  public double getAppliedVoltage(){
+    return m_SparkMax.getAppliedOutput() * m_SparkMax.getBusVoltage();
+  }
+
   /**
    * @return
    * The encoder associated with this motor controller.  You may use this
@@ -178,7 +182,7 @@ public class SparkMaxMotor extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (TuningVariables.debugLevel.getNumber() >= 5.0) {
+    if (TuningVariables.debugLevel.getNumber() >= 0.0) {
       SmartDashboard.putNumber(getName() + " pos", getPosition());
       SmartDashboard.putNumber(getName() + " vel", getVelocity());
       SmartDashboard.putNumber(getName() + " amps", m_SparkMax.getOutputCurrent());

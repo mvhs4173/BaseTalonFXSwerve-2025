@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SparkMaxMotorPair extends SubsystemBase {
@@ -55,8 +56,15 @@ public class SparkMaxMotorPair extends SubsystemBase {
     }
   }
 
+  public double getAppliedVoltage(){
+    return m_motor1.getAppliedVoltage();
+  }
+  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Applied Voltage", getAppliedVoltage());
+    SmartDashboard.putNumber("", getAppliedVoltage());
   }
 }
