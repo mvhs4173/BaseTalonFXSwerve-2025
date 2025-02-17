@@ -99,9 +99,9 @@ public final class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = CANId.FRONT_LEFT_DRIVE.getId();
-            public static final int angleMotorID = CANId.FRONT_LEFT_STEER.getId();
-            public static final int canCoderID = CANId.FRONT_LEFT_CANCODER.getId();
+            public static final CANId driveMotorID = CANId.FRONT_LEFT_DRIVE;
+            public static final CANId angleMotorID = CANId.FRONT_LEFT_STEER;
+            public static final CANId canCoderID = CANId.FRONT_LEFT_CANCODER;
             public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.499);// Rotation2d.fromDegrees(-115.58);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -109,9 +109,9 @@ public final class Constants {
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = CANId.FRONT_RIGHT_DRIVE.getId();
-            public static final int angleMotorID = CANId.FRONT_RIGHT_STEER.getId();
-            public static final int canCoderID = CANId.FRONT_RIGHT_CANCODER.getId();
+            public static final CANId driveMotorID = CANId.FRONT_RIGHT_DRIVE;
+            public static final CANId angleMotorID = CANId.FRONT_RIGHT_STEER;
+            public static final CANId canCoderID = CANId.FRONT_RIGHT_CANCODER;
             public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.961); //Rotation2d.fromDegrees(-30.85);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -119,9 +119,9 @@ public final class Constants {
         
         /* Back Left Module - Module 2 */
         public static final class Mod2 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = CANId.BACK_LEFT_DRIVE.getId();
-            public static final int angleMotorID = CANId.BACK_LEFT_STEER.getId();
-            public static final int canCoderID = CANId.BACK_LEFT_CANCODER.getId();
+            public static final CANId driveMotorID = CANId.BACK_LEFT_DRIVE;
+            public static final CANId angleMotorID = CANId.BACK_LEFT_STEER;
+            public static final CANId canCoderID = CANId.BACK_LEFT_CANCODER;
             public static final Rotation2d angleOffset = Rotation2d.fromRotations(-0.968); //Rotation2d.fromDegrees(-126.56);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -129,9 +129,9 @@ public final class Constants {
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = CANId.BACK_RIGHT_DRIVE.getId();
-            public static final int angleMotorID = CANId.BACK_RIGHT_STEER.getId();
-            public static final int canCoderID = CANId.BACK_RIGHT_CANCODER.getId();
+            public static final CANId driveMotorID = CANId.BACK_RIGHT_DRIVE;
+            public static final CANId angleMotorID = CANId.BACK_RIGHT_STEER;
+            public static final CANId canCoderID = CANId.BACK_RIGHT_CANCODER;
             public static final Rotation2d angleOffset = Rotation2d.fromRotations(0.982); //Rotation2d.fromDegrees(+168.93);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
