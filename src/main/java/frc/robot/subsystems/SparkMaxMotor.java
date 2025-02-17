@@ -26,6 +26,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CANId;
 import frc.robot.TuningVariables;
 
 public class SparkMaxMotor extends SubsystemBase {
@@ -46,13 +47,13 @@ public class SparkMaxMotor extends SubsystemBase {
   /*public SparkMaxMotor(int canId, double encoderRotationsPerFinalRotation, String name){
     this(canId, encoderRotationsPerFinalRotation, name);
   }*/
-  public SparkMaxMotor(int canId, double encoderRotationsPerFinalRotation, String name) {
+  public SparkMaxMotor(CANId canId, double encoderRotationsPerFinalRotation, String name) {
     m_name = name;
     m_encoderRotationsPerFinalRotation =  encoderRotationsPerFinalRotation;
     /*if (motorType == null){
       motorType = MotorType.kBrushless;
     }*/
-    m_SparkMax = new SparkMax(canId, MotorType.kBrushless);
+    m_SparkMax = new SparkMax(canId.getId(), MotorType.kBrushless);
     configure();
     /*m_motorType = motorType;
     if (motorType == MotorType.kBrushless){

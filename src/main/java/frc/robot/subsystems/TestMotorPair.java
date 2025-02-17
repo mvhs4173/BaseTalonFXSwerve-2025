@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CANId;
 
 public class TestMotorPair extends SubsystemBase {
   private SparkMaxMotor m_motor1;
@@ -12,7 +13,7 @@ public class TestMotorPair extends SubsystemBase {
   private SparkMaxMotorPair m_MotorPair;
 
   /** Creates a new TestMotorPair. */
-  public TestMotorPair(int canID1, int canID2, boolean reversed) {
+  public TestMotorPair(CANId canID1, CANId canID2, boolean reversed) {
     m_motor1 = new SparkMaxMotor(canID1, 5, "motor 1");
     m_motor2 = new SparkMaxMotor(canID2, 5, "motor 2");
     m_MotorPair = new SparkMaxMotorPair(m_motor1, m_motor2, reversed);

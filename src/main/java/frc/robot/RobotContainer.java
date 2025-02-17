@@ -12,39 +12,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autos.parkAuto;
 import frc.robot.commands.AimAtAprilTag;
-import frc.robot.commands.SetShoulderRPM;
-import frc.robot.commands.SetWrist2PercentSpeed;
-import frc.robot.commands.ShoulderGoToPosition;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.Wrist2GoToPosition;
 import frc.robot.subsystems.BeamBreakSensor;
 import frc.robot.subsystems.ClimberServo;
-import frc.robot.subsystems.CollectorRoller;
 import frc.robot.subsystems.Gyro;
-import frc.robot.subsystems.Shooter2;
-import frc.robot.subsystems.Shoulder;
 import frc.robot.subsystems.SparkMaxMotor;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.TestMotorPair;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Wrist2;
 
 /* Auto Commands */
-import frc.robot.commands.positionCommands.goToAmpShotPosition;
-import frc.robot.commands.positionCommands.goToSpeakerShotPosition;
-import frc.robot.commands.positionCommands.goToCollectionPositionFromAmp;
-import frc.robot.commands.positionCommands.goToCollectionPositionFromSpeaker;
-import frc.robot.commands.positionCommands.goToClimbPosition;
-
-import frc.robot.autos.redAmpPlusIntakeAuto;
-import frc.robot.autos.rightSpeaker;
-import frc.robot.autos.blueAmpPlusIntakeAuto;
-import frc.robot.autos.centerSpeaker;
-import frc.robot.autos.centerSpeakerScore2;
-import frc.robot.autos.compAuto;
-import frc.robot.autos.leftSpeaker;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -81,7 +59,7 @@ public class RobotContainer {
     private final ClimberServo m_climberServo = new ClimberServo(0);
     private final Vision m_Vision = new Vision("AprilTagCamera");*/
     private final Gyro m_Gyro = new Gyro(false);
-    private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR.getId(), CANId.RIGHT_ELEVATOR.getId(), true);
+    private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR, true);
     //private final SparkMaxMotor m_SparkMaxMotorTest = new SparkMaxMotor(22, 1, "Test motor");
     /* Autos */
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
