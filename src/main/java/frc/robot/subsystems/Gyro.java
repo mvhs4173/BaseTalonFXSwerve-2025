@@ -20,21 +20,18 @@ import frc.robot.TuningVariables;
 
 public class Gyro extends SubsystemBase {
   /** Creates a new Gyro. */
-  private Pigeon2 m_pigeon;
   private AHRS m_navX;
-  private boolean m_usePigeon;
-  private double m_yawOffsetPigeon2;
   private double m_yawOffsetNavX;
 
   public Gyro(boolean usePigeon) {
-    m_usePigeon = usePigeon;
+    /*m_usePigeon = usePigeon;
     m_pigeon = new Pigeon2(Constants.Swerve.pigeonID);
     StatusCode statusCode = m_pigeon.getConfigurator().apply(new Pigeon2Configuration()); // replaces .configFactoryDefault()
     if (statusCode.isError()) {
       System.out.println("Pigeon2 has a problem: " + statusCode);
       m_pigeon = null;
       m_usePigeon = false;
-    }
+    }*/
     //m_navX = new AHRS(SPI.Port.kMXP);
     m_navX = new AHRS(NavXComType.kMXP_SPI);
     calibrateNavX();
@@ -44,51 +41,36 @@ public class Gyro extends SubsystemBase {
   }
  
   public void setYaw(double degreesCcw){
-    if (m_pigeon != null) {
-      m_pigeon.reset();
-    }
     m_navX.reset();
-    m_yawOffsetPigeon2 = degreesCcw;
+    //m_yawOffsetPigeon2 = degreesCcw;
     m_yawOffsetNavX = degreesCcw + m_navX.getYaw();
    }
 
-  private double getYawPigeon2() {
+  /*private double getYawPigeon2() {
     return m_pigeon != null ? m_pigeon.getYaw().getValueAsDouble() + m_yawOffsetPigeon2 : 0.0;
-  }
+  }*/
   private double getYawNavX() {
     return -m_navX.getYaw() + m_yawOffsetNavX;
   }
   public double getYaw(){
-    if (m_usePigeon) {
-      return getYawPigeon2();
-    } else {
-      return getYawNavX();
-    }
+    return getYawNavX();
   }
   
   public double getRoll(){
-    if (m_usePigeon) {
-      return m_pigeon != null ? m_pigeon.getRoll().getValueAsDouble() : 0.0;
-    } else {
-      return m_navX.getRoll();
-    }
+    return m_navX.getRoll();
   }
   
   public double getPitch(){
-    if (m_usePigeon) {
-      return m_pigeon != null ? m_pigeon.getPitch().getValueAsDouble() : 0.0;
-    } else {
-      return m_navX.getPitch();
-    }
+    return m_navX.getPitch();
   }
 
-  public void toggleGyro(){
+  /*public void toggleGyro(){
     if (m_pigeon == null) {
       System.out.println("Cannot toggle gyro, pigeon2 does not work");
     } else {
       m_usePigeon = !(m_usePigeon);
     }
-  }
+  }*/
 
   /**
    * Make sure gyro is done calibrating before using it
@@ -132,29 +114,9 @@ public class Gyro extends SubsystemBase {
     // This method will be called once per scheduler run
     if (TuningVariables.debugLevel.getNumber() >= 0.0){
       double navXYaw = getYawNavX();
-      StatusSignal<Angle> rawPigeonYaw = null;
-      double pigeonYaw = 0.0;
-      StatusCode pigeonStatus = null;
-      if (m_pigeon != null){
-        rawPigeonYaw = m_pigeon.getYaw();
-        pigeonYaw = getYawPigeon2();
-        pigeonStatus = rawPigeonYaw.getStatus();
-      }
-      if (TuningVariables.debugLevel.getNumber() >= 0.0) {
-        SmartDashboard.putNumber("Pigeon Yaw", pigeonYaw);
-        SmartDashboard.putNumber("NavX Yaw", navXYaw);
-        SmartDashboard.putNumber("Gyro Differnce", pigeonYaw - navXYaw);
-      }
 
-      if (m_pigeon != null){
-        var pigeonError = m_pigeon.getFaultField();
-        if (TuningVariables.debugLevel.getNumber() >= 0.0){
-          SmartDashboard.putString("Pigeon Error Status", pigeonStatus.toString());
-          SmartDashboard.putString("Pigeon Fault Field", pigeonError.toString());
-          SmartDashboard.putString("rawPigeonYaw", rawPigeonYaw.toString());
-          SmartDashboard.putBoolean("Using Pigeon?", m_usePigeon);
-          SmartDashboard.putBoolean("NavX isConnected", m_navX.isConnected());
-        }
+      if (TuningVariables.debugLevel.getNumber() >= 0.0) {
+        SmartDashboard.putNumber("NavX Yaw", navXYaw);
       }
     }
   }
