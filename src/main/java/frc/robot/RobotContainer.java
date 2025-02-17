@@ -81,7 +81,7 @@ public class RobotContainer {
     private final ClimberServo m_climberServo = new ClimberServo(0);
     private final Vision m_Vision = new Vision("AprilTagCamera");*/
     private final Gyro m_Gyro = new Gyro(false);
-    private final TestMotorPair m_TestMotorPair = new TestMotorPair(42, 62, true);
+    private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR.getId(), CANId.RIGHT_ELEVATOR.getId(), true);
     //private final SparkMaxMotor m_SparkMaxMotorTest = new SparkMaxMotor(22, 1, "Test motor");
     /* Autos */
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();

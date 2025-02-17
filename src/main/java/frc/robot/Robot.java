@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     DataLogManager.start(); //Starts recording data log
     DriverStation.startDataLog(DataLogManager.getLog()); //Record both DS control and joystick data
+    CANId.checkForDuplicates();
     m_robotContainer = new RobotContainer();
 
   }
