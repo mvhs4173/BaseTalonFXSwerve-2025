@@ -26,6 +26,7 @@ public enum CANId {
   , BACK_RIGHT_CANCODER(45)
   , LEFT_ELEVATOR(42)
   , RIGHT_ELEVATOR(62)
+  , PNEUMATIC_CONTROL_MODULE(1);
   ;
 
   private int m_id;

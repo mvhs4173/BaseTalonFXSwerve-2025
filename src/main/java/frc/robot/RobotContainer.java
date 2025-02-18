@@ -17,6 +17,7 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.BeamBreakSensor;
 import frc.robot.subsystems.ClimberServo;
 import frc.robot.subsystems.Gyro;
+import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.SparkMaxMotor;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.TestMotorPair;
@@ -60,6 +61,7 @@ public class RobotContainer {
     private final Vision m_Vision = new Vision("AprilTagCamera");*/
     private final Gyro m_Gyro = new Gyro(false);
     private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR, true);
+    private final Pneumatics m_Pneumatics = new Pneumatics(0, 1);
     //private final SparkMaxMotor m_SparkMaxMotorTest = new SparkMaxMotor(22, 1, "Test motor");
     /* Autos */
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
