@@ -14,8 +14,8 @@ private final DoubleSolenoid m_doubleSolenoid;
 private final Compressor m_compressor;
   /** Creates a new Pneumatics. */
   public Pneumatics(int forwardChannel, int reverseChannel) {
-    m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
-    m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, forwardChannel, reverseChannel);
+    m_compressor = new Compressor(PneumaticsModuleType.REVPH);
+    m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, forwardChannel, reverseChannel);
   }
 
   /*public void makeDoubleSolenoid(int forwardChannel, int reverseChannel){
