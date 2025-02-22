@@ -61,7 +61,7 @@ public class RobotContainer {
     private final Vision m_Vision = new Vision("AprilTagCamera");*/
     private final Gyro m_Gyro = new Gyro(false);
     private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR, true);
-    private final Pneumatics m_Pneumatics = new Pneumatics(0, 1);
+    private final Pneumatics m_Pneumatics = new Pneumatics(8, 1);
     //private final SparkMaxMotor m_SparkMaxMotorTest = new SparkMaxMotor(22, 1, "Test motor");
     /* Autos */
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -191,6 +191,8 @@ public class RobotContainer {
         int aprilTagTargetId = 4;
         //driveA.whileTrue(new AimAtAprilTag(m_Vision, s_Swerve, 14, 1, aprilTagTargetId)); //allow 1 degree of error
         driveY.onTrue(new InstantCommand(() -> m_Gyro.setYaw(0.0)));
+        driveX.onTrue(new InstantCommand(() -> m_Pneumatics.extend()));
+        driveX.onFalse(new InstantCommand(() -> m_Pneumatics.retract()));
         //driveB.onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.1)));
         //driveB.onFalse(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.0)));
         //driveX.onTrue(new InstantCommand(() -> m_SparkMaxMotorTest.setPercentSpeed(0.1)));
