@@ -19,10 +19,12 @@ public class CoralArm extends SubsystemBase {
   private final SparkMaxMotor m_wristMotor;
   private final SparkMaxMotor m_rollerMotor;
   private final OnOffSwitch m_CoralDetectionSensor;
+  private final double m_wristMotorRotationLimit = 0.25;
   private boolean m_isExtended = false;
   private double m_wristPosition;
   private boolean m_isCoralInIntake;
   private boolean m_isWristVertical;
+  private boolean m_isWristHorizontal;
   private double m_tolerance = (10.0 / 360.0); // May need tuning
   
 
@@ -55,20 +57,33 @@ public class CoralArm extends SubsystemBase {
   }
 
   private void setWristPercentSpeed(double percent){
-    m_wristMotor.setPercentSpeed(percent);
+    if (Math.abs(m_wristPosition) < m_wristMotorRotationLimit){
+      m_wristMotor.setPercentSpeed(percent);
+    }
   }
 
   public Command wristGoToPosition(double desiredPositionRotations){
     double percentSpeed = 0.1;
     return new RunCommand(() -> {
-      if(Math.abs(desiredPositionRotations - m_wristPosition) < m_tolerance){
-        setWristPercentSpeed(0.0);
-      } else if(desiredPositionRotations > m_wristPosition){
-        setWristPercentSpeed(percentSpeed);
-      } else if(desiredPositionRotations < m_wristPosition){
-        setWristPercentSpeed(-percentSpeed);
+      if(Math.abs(desiredPositionRotations) > m_wristMotorRotationLimit){
+        if(Math.abs(m_wristMotorRotationLimit - m_wristPosition) < m_tolerance){
+          setWristPercentSpeed(0.0);
+        } else if(m_wristMotorRotationLimit > m_wristPosition){
+          setWristPercentSpeed(percentSpeed);
+        } else if(m_wristMotorRotationLimit < m_wristPosition){
+          setWristPercentSpeed(-percentSpeed);
+        }
+      } else {
+        if(Math.abs(desiredPositionRotations - m_wristPosition) < m_tolerance){
+          setWristPercentSpeed(0.0);
+        } else if(desiredPositionRotations > m_wristPosition){
+          setWristPercentSpeed(percentSpeed);
+        } else if(desiredPositionRotations < m_wristPosition){
+          setWristPercentSpeed(-percentSpeed);
+        }
       }
     });
+
   }
 
   public Command rollerIntake(){
@@ -97,22 +112,33 @@ public class CoralArm extends SubsystemBase {
     });
   }
 
-  private boolean isCoralInIntake(){
+  public boolean isCoralInIntake(){
     return m_CoralDetectionSensor.isActivated();
   }
 
-  private boolean isWristVertical(){
-    if(Math.abs(0.25 - m_wristPosition) < m_tolerance){
+  public boolean isWristVertical(){
+    if (Math.abs(0.25 - m_wristPosition) < m_tolerance) {
       return true;
-    } else{
+    } else {
+      return false;
+    }
+  }
+
+  public boolean isWristHorizontal(){
+    if (Math.abs(0.0 - m_wristPosition) < m_tolerance) {
+      return true;
+    } else {
       return false;
     }
   }
   /*Triggers: coral collected, arm extended, wrist vertical,
-   coral output, wrist horizontal, arm retracted*/
-  public Trigger isCoralIntaken = new Trigger(() -> m_isCoralInIntake);
+   wrist horizontal, arm retracted*/
+  public Trigger isCoralInIntake = new Trigger(() -> m_isCoralInIntake);
   public Trigger isArmExtended = new Trigger(() -> m_isExtended);
   public Trigger isWristVertical = new Trigger(() -> m_isWristVertical);
+  public Trigger isWristHorizontal = new Trigger(() -> m_isWristHorizontal);
+  public Trigger isArmRetracted = new Trigger(() -> !m_isExtended);
+
 
 
 
@@ -122,5 +148,6 @@ public class CoralArm extends SubsystemBase {
     m_wristPosition = m_wristMotor.getPosition();
     m_isCoralInIntake = isCoralInIntake();
     m_isWristVertical = isWristVertical();
+    m_isWristHorizontal = isWristHorizontal();
   }
 }

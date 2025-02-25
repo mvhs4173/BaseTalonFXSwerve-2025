@@ -1,0 +1,1 @@
+# Digital Input Port Assignments
