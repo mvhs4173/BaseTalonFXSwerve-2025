@@ -191,16 +191,16 @@ public class RobotContainer {
         int aprilTagTargetId = 4;
         //driveA.whileTrue(new AimAtAprilTag(m_Vision, s_Swerve, 14, 1, aprilTagTargetId)); //allow 1 degree of error
         driveY.onTrue(new InstantCommand(() -> m_Gyro.setYaw(0.0)));
-        driveX.onTrue(new InstantCommand(() -> m_Pneumatics.extend()));
-        driveX.onFalse(new InstantCommand(() -> m_Pneumatics.retract()));
+        //driveX.onTrue(new InstantCommand(() -> m_Pneumatics.extend()));
+        //driveX.onFalse(new InstantCommand(() -> m_Pneumatics.retract()));
         //driveB.onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.1)));
         //driveB.onFalse(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.0)));
         //driveX.onTrue(new InstantCommand(() -> m_SparkMaxMotorTest.setPercentSpeed(0.1)));
         //driveX.onFalse(new InstantCommand(() -> m_SparkMaxMotorTest.setPercentSpeed(0.0)));
-        new Trigger(() -> m_driveController.getPOV() != -1)
+        /*new Trigger(() -> m_driveController.getPOV() != -1)
           .onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed((m_driveController.getPOV() - 180.0) / -180.0 / 5)));
         new Trigger(() -> m_driveController.getPOV() == -1)
-          .onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.0)));
+          .onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.0)));*/
         // Now for climbing control.  Climbing requires much more power in shoulder than shooting does.
         // Y button, while held down, causes arm to rise to vertical.
         //armY.whileTrue(new goToClimbPosition(m_shoulder, m_wrist2));

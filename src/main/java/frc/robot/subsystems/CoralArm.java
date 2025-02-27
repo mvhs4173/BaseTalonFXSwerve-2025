@@ -20,6 +20,8 @@ public class CoralArm extends SubsystemBase {
   private final SparkMaxMotor m_rollerMotor;
   private final OnOffSwitch m_CoralDetectionSensor;
   private final double m_wristMotorRotationLimit = 0.25;
+  private final double m_ROLLERINWARDPERCENTSPEED = 0.1;
+  private final double m_ROLLEROUTWARDPERCENTSPEED = -0.1;
   private boolean m_isExtended = false;
   private double m_wristPosition;
   private boolean m_isCoralInIntake;
@@ -87,16 +89,15 @@ public class CoralArm extends SubsystemBase {
   }
 
   public Command rollerIntake(){
-    final double percentSpeed = 0.1;
+
     return new RunCommand(() -> {
-      setRollerPercentSpeed(percentSpeed);
+      setRollerPercentSpeed(m_ROLLERINWARDPERCENTSPEED);
     });
   }
 
   public Command rollerPushOut(){
-    final double percentSpeed = -0.1;
     return new RunCommand(() -> {
-      setRollerPercentSpeed(percentSpeed);
+      setRollerPercentSpeed(m_ROLLEROUTWARDPERCENTSPEED);
     });
   }
 

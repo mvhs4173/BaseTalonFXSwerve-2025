@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.CANId;
 
 public class CoralManipulator extends SubsystemBase {
   private Elevator m_Elevator;
@@ -19,7 +18,8 @@ public class CoralManipulator extends SubsystemBase {
   }
 
   /*go to safe extension position, extend, go to collection position, roll in (collect),
-   go to safe extension position, retract*/
+   go to safe extension position, retract
+   for the purpose of grabbing a horizontal-laying coral on the floor directly in front of the robot*/
   public Command collectCoral(){
     return Commands.sequence(
       m_Elevator.goToSafeToExtendPosition().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(2.0),
@@ -62,16 +62,24 @@ public class CoralManipulator extends SubsystemBase {
   }
 
   /*go to L1 position, extend arm -- wrist rotation not neccesary because it is the trough*/
-  public Command goToL1ScoringPosition(){
+  public Command goToL1TroughScoringPosition(){
     return Commands.sequence(
       m_Elevator.goToL1Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
       m_CoralArm.armExtend().withTimeout(2.0)
     );
   }
+
   /*drop the set amount. Amount is set in Elevator.java as the value: m_DISTANCETOLOWERTOSCORE*/
   public Command dropToScoreOnReef(){
     return Commands.sequence(
       m_Elevator.goToLowerPosition()
+    );
+  }
+
+  /*make roller go outwards */
+  public Command pushOutWithRollers(){
+    return Commands.sequence(
+      m_CoralArm.rollerPushOut()
     );
   }
 
