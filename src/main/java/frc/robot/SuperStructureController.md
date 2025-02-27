@@ -2,8 +2,8 @@
 
 Superstructure Xbox controller must be in position 1 on Driver Station's USB tab.
 
-Button assignments are not done yet.
-Rotation directions, clockwise or counter-clockwise, are as seen from the robot’s left.
+NOTE: all buttons are single press and will continue to run until another of these buttons is pressed
+
 
 - **Y button** - L4 - Sends elevator to L4 position, including extending and rotating the end affector
 - **B button** - L3 - Sends elevator to L3 position, including extending and rotating the end affector

@@ -14,8 +14,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AimAtAprilTag;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.BeamBreakSensor;
 import frc.robot.subsystems.ClimberServo;
+import frc.robot.subsystems.CoralArm;
+import frc.robot.subsystems.CoralManipulator;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.SparkMaxMotor;
@@ -60,8 +64,12 @@ public class RobotContainer {
     private final ClimberServo m_climberServo = new ClimberServo(0);
     private final Vision m_Vision = new Vision("AprilTagCamera");*/
     private final Gyro m_Gyro = new Gyro(false);
-    private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR, true);
-    private final Pneumatics m_Pneumatics = new Pneumatics(8, 1);
+    //private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR, true);
+    //private final Pneumatics m_Pneumatics = new Pneumatics(8, 1);
+    private final CoralArm m_CoralArm = new CoralArm(CANId.CORAL_ARM_WRIST, CANId.CORAL_ROLLER, 1);
+    private final Elevator m_Elevator = new Elevator(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR);
+    private final CoralManipulator m_CoralManipulator = new CoralManipulator(m_Elevator, m_CoralArm);
+    private final AlgaeArm m_AlgaeArm = new AlgaeArm(CANId.ALGAE_ROLLER);
     //private final SparkMaxMotor m_SparkMaxMotorTest = new SparkMaxMotor(22, 1, "Test motor");
     /* Autos */
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -155,86 +163,44 @@ public class RobotContainer {
         /* Start assuming the m_armController is not null */
         JoystickButton armA = new JoystickButton(m_armController, XboxController.Button.kA.value);
         JoystickButton armB = new JoystickButton(m_armController, XboxController.Button.kB.value);
-        // JoystickButton armX = new JoystickButton(m_armController, XboxController.Button.kX.value)
+        JoystickButton armX = new JoystickButton(m_armController, XboxController.Button.kX.value);
         JoystickButton armY = new JoystickButton(m_armController, XboxController.Button.kY.value);
         JoystickButton armLeftBumper = new JoystickButton(m_armController, XboxController.Button.kLeftBumper.value);
         JoystickButton armRightBumper = new JoystickButton(m_armController, XboxController.Button.kRightBumper.value);
-        JoystickButton armStart = new JoystickButton(m_armController, XboxController.Button.kStart.value);
-        JoystickButton armBack = new JoystickButton(m_armController, XboxController.Button.kBack.value);
-        JoystickButton armRightStick = new JoystickButton(m_armController, XboxController.Button.kRightStick.value);
-        JoystickButton driveA = new JoystickButton(m_driveController, XboxController.Button.kA.value);
         JoystickButton driveY = new JoystickButton(m_driveController, XboxController.Button.kY.value);
         JoystickButton driveB = new JoystickButton(m_driveController, XboxController.Button.kB.value);
         JoystickButton driveX = new JoystickButton(m_driveController, XboxController.Button.kX.value);
+        JoystickButton driveLeftBumper = new JoystickButton(m_driveController, XboxController.Button.kLeftBumper.value);
+        JoystickButton driveRightBumper = new JoystickButton(m_driveController, XboxController.Button.kRightBumper.value);
 
-
-        Trigger armLeftTrigger = new Trigger(() -> m_armController.getLeftTriggerAxis() > 0.5 );
-        Trigger armRightTrigger = new Trigger(() -> m_armController.getRightTriggerAxis() > 0.5);
-
-        /*Command shootForSpeaker = m_shooter2.shoot2ForSpeakerCommand();
-        Command shootForAmp = m_shooter2.shoot2ForAmpCommand();
-        Command doIntake = m_shooter2.intake2UntilBeamBreak(m_CollectorRoller, m_BeamBreakSensor);*/
         
-        /*armA.onTrue(doIntake);
-        armB.whileTrue(new InstantCommand(() -> m_CollectorRoller.pushOut()));
-        armB.onFalse(new InstantCommand(() -> m_CollectorRoller.stop()));
+        //int aprilTagTargetId = 4;
 
-        armLeftBumper.whileTrue(new goToSpeakerShotPosition(m_shoulder, m_wrist2));
-        armLeftBumper.onFalse(new goToCollectionPositionFromSpeaker(m_shoulder, m_wrist2));
-        armRightBumper.whileTrue(shootForSpeaker);
-
-
-        armLeftTrigger.whileTrue(new goToAmpShotPosition(m_shoulder, m_wrist2));
-        armLeftTrigger.onFalse(new goToCollectionPositionFromAmp(m_shoulder, m_wrist2));
-        armRightTrigger.whileTrue(shootForAmp);*/
+      //Drive buttons:
         
-        int aprilTagTargetId = 4;
         //driveA.whileTrue(new AimAtAprilTag(m_Vision, s_Swerve, 14, 1, aprilTagTargetId)); //allow 1 degree of error
         driveY.onTrue(new InstantCommand(() -> m_Gyro.setYaw(0.0)));
-        //driveX.onTrue(new InstantCommand(() -> m_Pneumatics.extend()));
-        //driveX.onFalse(new InstantCommand(() -> m_Pneumatics.retract()));
-        //driveB.onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.1)));
-        //driveB.onFalse(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.0)));
-        //driveX.onTrue(new InstantCommand(() -> m_SparkMaxMotorTest.setPercentSpeed(0.1)));
-        //driveX.onFalse(new InstantCommand(() -> m_SparkMaxMotorTest.setPercentSpeed(0.0)));
-        /*new Trigger(() -> m_driveController.getPOV() != -1)
-          .onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed((m_driveController.getPOV() - 180.0) / -180.0 / 5)));
-        new Trigger(() -> m_driveController.getPOV() == -1)
-          .onTrue(new InstantCommand(() -> m_TestMotorPair.setPercentSpeed(0.0)));*/
-        // Now for climbing control.  Climbing requires much more power in shoulder than shooting does.
-        // Y button, while held down, causes arm to rise to vertical.
-        //armY.whileTrue(new goToClimbPosition(m_shoulder, m_wrist2));
-        // bottom sectors of POV are for climbing.  SW is weakest (use for engaging the chain),
-        // S can raise robot on hook two (from the top), SE can raise robot on topmost hook.
-        // All will raise as long as button is pressed.
-        /*new Trigger (() -> m_armController.getPOV() == 225)
-          .whileTrue(new SetShoulderRPM(m_shoulder, 5.0));
-        new Trigger(() -> m_armController.getPOV() == 180)
-          .whileTrue(new SetShoulderRPM(m_shoulder, 10.0));
-        new Trigger (() -> m_armController.getPOV()== 135)
-          .whileTrue(new SetShoulderRPM(m_shoulder,13.0));
-        // depressing top of POV engages ratchet - cannot be undone 
-        new Trigger(() -> m_armController.getPOV() == 0)
-          .onTrue(new InstantCommand(() -> m_climberServo.setAngle(60)));*/
+        driveRightBumper.onTrue(m_AlgaeArm.extendArm());
+        driveLeftBumper.onTrue(m_AlgaeArm.retractArm()); //Retracts arm and also sets the roller percent speed to zero
+        driveX.whileTrue(m_AlgaeArm.rollerIntake());
+        driveX.whileFalse(m_AlgaeArm.rollerHoldAlgae());
+        driveB.whileTrue(m_AlgaeArm.rollerPushOut());
+        
 
-        // Now for manual control of arm and wrist
-        // While left joystick is pushed forward, shoulder goes up at constant speed
-        // While the 'back' button is pressed the soft limits on position will be ignored.
-        /*new Trigger(() -> m_armController.getLeftY() < -0.5)
-          .whileTrue(new SetShoulderRPM(m_shoulder, -3.0, armBack));
-        // While left joystick pushed backward, shoulder goes down at constant speed
-        new Trigger(() -> m_armController.getLeftY() > 0.5)
-          .whileTrue(new SetShoulderRPM(m_shoulder, 3.0, armBack));
-        // Right joystick controls wrist in similar way
-        new Trigger(() -> m_armController.getRightY() < -0.5)
-          .whileTrue(new SetWrist2PercentSpeed(m_wrist2, 0.25, armBack));
-        new Trigger(() -> m_armController.getRightY() > 0.5)
-          .whileTrue(new SetWrist2PercentSpeed(m_wrist2, -0.04, armBack));
-        // press right stick button to hold wrist at current position
-        armRightStick.onTrue(new InstantCommand(m_wrist2::holdPosition, m_wrist2));
-        armStart.onTrue(
-            new InstantCommand(() -> m_wrist2.setCurrentPositionAsZeroEncoderPosition())
-            .andThen(new InstantCommand(() -> m_shoulder.setCurrentPositionAsZeroEncoderPosition())));*/  
+      //Superstructure buttons:
+
+        //the following all just go to the position and do not actually score it
+        armY.onTrue(m_CoralManipulator.goToL4ScoringPosition());
+        armB.onTrue(m_CoralManipulator.goToL3ScoringPosition());
+        armX.onTrue(m_CoralManipulator.goToL2ScoringPosition());
+        armA.onTrue(m_CoralManipulator.goToL1TroughScoringPosition());
+
+        //other superstructure buttons:
+        armRightBumper.onTrue(m_CoralManipulator.pushOutWithRollers());
+        armLeftBumper.onTrue(m_CoralManipulator.collectCoral());
+        new Trigger(() -> m_armController.getPOV() == 180)
+          .onTrue(m_CoralManipulator.dropToScoreOnReef());
+
     }
 
     /**

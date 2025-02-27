@@ -28,7 +28,8 @@ public enum CANId {
   , RIGHT_ELEVATOR(62)
   , PNEUMATIC_CONTROL_MODULE(1)
   , CORAL_ROLLER(53)
-  , CORAL_ARM_WRIST(11);
+  , CORAL_ARM_WRIST(11)
+  , ALGAE_ROLLER(21);
   ;
 
   private int m_id;
