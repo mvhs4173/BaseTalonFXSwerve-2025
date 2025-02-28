@@ -37,7 +37,7 @@ public class Elevator extends SubsystemBase {
     m_leftMotor = new SparkMaxMotor(leftCanId, 5, "Left Elevator Motor");
     m_rightMotor = new SparkMaxMotor(rightCanId, 5, "Right Elevator Motor");
     m_sparkMaxMotorPair = new SparkMaxMotorPair(m_leftMotor, m_rightMotor, true);
-    m_INITIALPOSITION = m_centerStagePositionInches;
+    m_INITIALPOSITION = (m_centerStagePositionInches + 1);
     m_desiredPosition = m_INITIALPOSITION;
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
@@ -110,6 +110,10 @@ public class Elevator extends SubsystemBase {
 
   public Command goToSafeToExtendPosition(){
     return runOnce(() -> {m_desiredPosition = m_SAFETOEXTENDPOSITION;});
+  }
+
+  public Command goToHomePosition(){
+    return runOnce(() -> {m_desiredPosition = m_INITIALPOSITION;});
   }
 
   @Override

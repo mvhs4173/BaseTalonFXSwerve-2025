@@ -83,6 +83,12 @@ public class CoralManipulator extends SubsystemBase {
     );
   }
 
+  public Command goToHome(){
+    return Commands.sequence(
+      m_Elevator.goToHomePosition()
+    );
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
