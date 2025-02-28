@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -150,5 +151,11 @@ public class CoralArm extends SubsystemBase {
     m_isCoralInIntake = isCoralInIntake();
     m_isWristVertical = isWristVertical();
     m_isWristHorizontal = isWristHorizontal();
+
+    SmartDashboard.putBoolean("Is wrist Vertical", m_isWristVertical);
+    SmartDashboard.putBoolean("Is wrist Horizontal", m_isWristHorizontal);
+    SmartDashboard.putBoolean("Is Coral in intake", m_isCoralInIntake);
+    SmartDashboard.putNumber("Wrist Position", m_wristPosition);
+    SmartDashboard.putBoolean("Is coral arm extended", m_isExtended);
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,6 +39,8 @@ public class Elevator extends SubsystemBase {
     m_sparkMaxMotorPair = new SparkMaxMotorPair(m_leftMotor, m_rightMotor, true);
     m_INITIALPOSITION = m_centerStagePositionInches;
     m_desiredPosition = m_INITIALPOSITION;
+    m_leftMotor.setToBrakeOnIdle(true);
+    m_rightMotor.setToBrakeOnIdle(true);
     setDefaultCommand(goToDesiredPosition());
   }
 
@@ -113,5 +116,8 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     m_centerStagePositionInches = getCenterStagePositionInches();
+    SmartDashboard.putNumber("Center stage position inches", m_centerStagePositionInches);
+    SmartDashboard.putBoolean("Is close to desired position", isCloseToDesiredPosition());
+    SmartDashboard.putNumber("Desired position", m_desiredPosition);
   }
 }

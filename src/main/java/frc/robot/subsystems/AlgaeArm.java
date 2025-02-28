@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +19,7 @@ public class AlgaeArm extends SubsystemBase {
   private final double m_ROLLEROUTWARDPERCENTSPEED = -1.0; //TODO: adjust these
   private final double m_ROLLERHOLDINGALGAEPERCENTSPEED = 0.5; //TODO: adjust these
   private boolean m_isExtended = false;
+  private double m_rollerPercentSpeed = 0.0;
 
   /** Creates a new AlgaeArm. */
   public AlgaeArm(CANId rollerCAN) {
@@ -41,11 +43,13 @@ public class AlgaeArm extends SubsystemBase {
 
   private void setRollerPercentSpeed(double percent){
     m_rollerMotor.setPercentSpeed(percent);
+    m_rollerPercentSpeed = percent;
   }
 
   private void retractAndSetPercentSpeedToZero(){
     retract();
     setRollerPercentSpeed(0.0);
+    m_rollerPercentSpeed = 0.0;
   }
 
   public Command extendArm(){
@@ -72,5 +76,7 @@ public class AlgaeArm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Is Algae arm extended", m_isExtended);
+    SmartDashboard.putNumber("Roller percent speed", m_rollerPercentSpeed);
   }
 }

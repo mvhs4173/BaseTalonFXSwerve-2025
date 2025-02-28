@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+
 //import com.pathplanner.lib.auto.NamedCommands;
 //import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -48,6 +50,7 @@ public class RobotContainer {
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
+
 
     /* Driver controller Buttons */
     private final JoystickButton zeroGyro = m_driveController != null ? new JoystickButton(m_driveController, XboxController.Button.kY.value) : null;
@@ -108,8 +111,8 @@ public class RobotContainer {
         //registerNamedPathPlannerCommands();
 
         //Add commands to the autonomous command chooser
-        /*m_chooser.setDefaultOption("Leave Starting Zone", new parkAuto(s_Swerve));
-        m_chooser.addOption("Red Amp And Intake", new redAmpPlusIntakeAuto(s_Swerve, m_shoulder, m_wrist2, m_shooter2, m_CollectorRoller, m_BeamBreakSensor));
+        //m_chooser.setDefaultOption("Leave Starting Zone", new parkAuto(s_Swerve));
+        /*m_chooser.addOption("Red Amp And Intake", new redAmpPlusIntakeAuto(s_Swerve, m_shoulder, m_wrist2, m_shooter2, m_CollectorRoller, m_BeamBreakSensor));
         m_chooser.addOption("Blue Amp And Intake", new blueAmpPlusIntakeAuto(s_Swerve, m_shoulder, m_wrist2, m_shooter2, m_CollectorRoller, m_BeamBreakSensor));
         m_chooser.addOption("Center Speaker", new centerSpeaker(s_Swerve, m_shoulder, m_wrist2, m_shooter2));
         m_chooser.addOption("Right Speaker", new rightSpeaker(s_Swerve, m_shoulder, m_wrist2, m_shooter2));
@@ -121,7 +124,7 @@ public class RobotContainer {
         //m_chooser.addOption("Amp Shot Auto", m_Blue1AmpShotAuto);
         //m_chooser.addOption("Amp Shot 2 Auto", m_Blue2AmpShotAuto);
         //Put the chooser on the dashboard
-        SmartDashboard.putData(m_chooser);
+        //SmartDashboard.putData(m_chooser);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -130,7 +133,7 @@ public class RobotContainer {
         //SmartDashboard.putData(m_Vision);
     }
 
-    private void registerNamedPathPlannerCommands(){
+    //private void registerNamedPathPlannerCommands(){
       //PathPlanner autos use "named commands", which must be registered
       /*Command goToAmpShotPosition = new ParallelCommandGroup(
         new ShoulderGoToPosition(m_shoulder, ShoulderGoToPosition.Method.kRPM, 10.0, -0.185),
@@ -147,7 +150,7 @@ public class RobotContainer {
       //NamedCommands.registerCommand("Shoot", shoot2ForAmp);
       //NamedCommands.registerCommand("GoToCollectionPosition", goToCollectionPosition);
       //NamedCommands.registerCommand("Collect", doIntake);      
-    }
+    //}
 
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
@@ -190,10 +193,10 @@ public class RobotContainer {
       //Superstructure buttons:
 
         //the following all just go to the position and do not actually score it
-        armY.onTrue(m_CoralManipulator.goToL4ScoringPosition());
-        armB.onTrue(m_CoralManipulator.goToL3ScoringPosition());
-        armX.onTrue(m_CoralManipulator.goToL2ScoringPosition());
-        armA.onTrue(m_CoralManipulator.goToL1TroughScoringPosition());
+        armY.onTrue(m_CoralManipulator.goToL4ScoringPosition()); //L4
+        armB.onTrue(m_CoralManipulator.goToL3ScoringPosition()); //L3
+        armX.onTrue(m_CoralManipulator.goToL2ScoringPosition()); //L2
+        armA.onTrue(m_CoralManipulator.goToL1TroughScoringPosition()); //L1
 
         //other superstructure buttons:
         armRightBumper.onTrue(m_CoralManipulator.pushOutWithRollers());
@@ -203,13 +206,16 @@ public class RobotContainer {
 
     }
 
+
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        Translation2d translation2d = new Translation2d(2,0); //TODO: tune this. not too urgent
         // An ExampleCommand will run in autonomous
-        return m_chooser.getSelected();
+        return new InstantCommand(() -> s_Swerve.drive(translation2d, 0.0, false, true)); //drive forward
     }
   }
