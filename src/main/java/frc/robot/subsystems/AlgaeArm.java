@@ -17,7 +17,7 @@ public class AlgaeArm extends SubsystemBase {
   private final SparkMaxMotor m_rollerMotor;
   private final double m_ROLLERINWARDPERCENTSPEED = 1.0; //TODO: adjust these
   private final double m_ROLLEROUTWARDPERCENTSPEED = -1.0; //TODO: adjust these
-  private final double m_ROLLERHOLDINGALGAEPERCENTSPEED = 0.5; //TODO: adjust these
+  private final double m_ROLLERHOLDINGALGAEPERCENTSPEED = 0.3; //TODO: adjust these
   private boolean m_isExtended = false;
   private double m_rollerPercentSpeed = 0.0;
 

@@ -35,9 +35,9 @@ public class CoralManipulator extends SubsystemBase {
     */
     public Command goToL4ScoringPosition(){
       return Commands.sequence(
-        m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
-        m_CoralArm.armExtend().withTimeout(2.0),
-        m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
+        m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(5.0),
+        m_CoralArm.armExtend().withTimeout(5.0)
+        //m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
       );
     }
 
@@ -85,6 +85,8 @@ public class CoralManipulator extends SubsystemBase {
 
   public Command goToHome(){
     return Commands.sequence(
+      m_Elevator.goToSafeToExtendPosition().withTimeout(2),
+      m_CoralArm.armRetract(),
       m_Elevator.goToHomePosition()
     );
   }

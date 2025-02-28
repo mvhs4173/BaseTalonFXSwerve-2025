@@ -16,19 +16,19 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxMotor m_rightMotor;
   private final SparkMaxMotorPair m_sparkMaxMotorPair;
   private double m_centerStagePositionInches;
-  private double m_zeroPosition;
+  private double m_homePosition;
   private final double m_INITIALPOSITION;
   private double m_desiredPosition;
-  private double m_tolerance = 0.5; //TODO: adjust these
-  private double m_upwardPercentSpeed = 0.2; //TODO: adjust these
-  private double m_downwardPercentSpeed = -0.1; //TODO: adjust these
-  private final double m_SAFETOEXTENDPOSITION = 8.0; //TODO: adjust these
+  private double m_tolerance = 0.05; //TODO: adjust these
+  private double m_upwardPercentSpeed = 6; //TODO: adjust these
+  private double m_downwardPercentSpeed = -0.5; //TODO: adjust these
+  private final double m_SAFETOEXTENDPOSITION;
   private final double m_COLLECTIONPOSITION = 1.0; //TODO: adjust these
   private final double m_L1POSITION = 10.0; //TODO: adjust these
   private final double m_L2POSITION = 20.0; //TODO: adjust these
   private final double m_L3POSITION = 30.0; //TODO: adjust these
-  private final double m_L4POSITION = 40.0; //TODO: adjust these
-  private final double m_UPPERHEIGHTLIMIT = 50.0; //TODO: adjust these
+  private final double m_L4POSITION = 100.0; //TODO: adjust these
+  private final double m_UPPERHEIGHTLIMIT = 110.0; //TODO: adjust these
   private final double m_LOWERHEIGHTLIMIT = 0.5; //TODO: adjust these
   private final double m_DISTANCETOLOWERTOSCORE = 8.0; //TODO: adjust these
 
@@ -37,11 +37,13 @@ public class Elevator extends SubsystemBase {
     m_leftMotor = new SparkMaxMotor(leftCanId, 5, "Left Elevator Motor");
     m_rightMotor = new SparkMaxMotor(rightCanId, 5, "Right Elevator Motor");
     m_sparkMaxMotorPair = new SparkMaxMotorPair(m_leftMotor, m_rightMotor, true);
-    m_INITIALPOSITION = (m_centerStagePositionInches + 1);
+    m_INITIALPOSITION = (m_centerStagePositionInches);
+    m_homePosition = (m_INITIALPOSITION + 5);
     m_desiredPosition = m_INITIALPOSITION;
+    m_SAFETOEXTENDPOSITION = m_homePosition;
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
-    setDefaultCommand(goToDesiredPosition());
+    //setDefaultCommand(goToDesiredPosition());
   }
 
   /*Rotations to inches for elevator motors */
@@ -113,7 +115,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command goToHomePosition(){
-    return runOnce(() -> {m_desiredPosition = m_INITIALPOSITION;});
+    return runOnce(() -> {m_desiredPosition = m_homePosition;});
   }
 
   @Override
@@ -123,5 +125,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Center stage position inches", m_centerStagePositionInches);
     SmartDashboard.putBoolean("Is close to desired position", isCloseToDesiredPosition());
     SmartDashboard.putNumber("Desired position", m_desiredPosition);
+    SmartDashboard.putNumber("Distance to desired position inches", getDistanceToDesiredPositionInches());
+    goToDesiredPosition();
   }
 }

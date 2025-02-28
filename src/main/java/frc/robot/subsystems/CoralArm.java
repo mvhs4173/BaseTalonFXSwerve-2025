@@ -21,8 +21,9 @@ public class CoralArm extends SubsystemBase {
   private final SparkMaxMotor m_rollerMotor;
   private final OnOffSwitch m_CoralDetectionSensor;
   private final double m_wristMotorRotationLimit = 0.25;
-  private final double m_ROLLERINWARDPERCENTSPEED = 0.1;
-  private final double m_ROLLEROUTWARDPERCENTSPEED = -0.1;
+  private final double m_ROLLERINWARDPERCENTSPEED = 1.0; //TODO: adjust these
+  private final double m_ROLLEROUTWARDPERCENTSPEED = -1.0; //TODO: adjust these
+  private final double m_wristPercentSpeed = 0.1; //TODO: adjust these
   private boolean m_isExtended = false;
   private double m_wristPosition;
   private boolean m_isCoralInIntake;
@@ -66,23 +67,22 @@ public class CoralArm extends SubsystemBase {
   }
 
   public Command wristGoToPosition(double desiredPositionRotations){
-    double percentSpeed = 0.1;
     return new RunCommand(() -> {
       if(Math.abs(desiredPositionRotations) > m_wristMotorRotationLimit){
         if(Math.abs(m_wristMotorRotationLimit - m_wristPosition) < m_tolerance){
           setWristPercentSpeed(0.0);
         } else if(m_wristMotorRotationLimit > m_wristPosition){
-          setWristPercentSpeed(percentSpeed);
+          setWristPercentSpeed(m_wristPercentSpeed);
         } else if(m_wristMotorRotationLimit < m_wristPosition){
-          setWristPercentSpeed(-percentSpeed);
+          setWristPercentSpeed(-m_wristPercentSpeed);
         }
       } else {
         if(Math.abs(desiredPositionRotations - m_wristPosition) < m_tolerance){
           setWristPercentSpeed(0.0);
         } else if(desiredPositionRotations > m_wristPosition){
-          setWristPercentSpeed(percentSpeed);
+          setWristPercentSpeed(m_wristPercentSpeed);
         } else if(desiredPositionRotations < m_wristPosition){
-          setWristPercentSpeed(-percentSpeed);
+          setWristPercentSpeed(-m_wristPercentSpeed);
         }
       }
     });
