@@ -216,7 +216,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Translation2d translation2d = new Translation2d(2,0); //TODO: tune this. not too urgent
+        Translation2d translation2d = new Translation2d(4,0); //TODO: tune this. not too urgent
         // An ExampleCommand will run in autonomous
         return new InstantCommand(() -> s_Swerve.drive(translation2d, 0.0, false, true)); //drive forward
     }
