@@ -82,7 +82,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command goToDesiredPosition(){
-    return new RunCommand(() -> goToDesiredPosition(), this);
+    return run(() -> goToDesiredPosition());
   }
 
   public Command goToLowerPosition(){

@@ -49,7 +49,6 @@ public class AlgaeArm extends SubsystemBase {
   private void retractAndSetPercentSpeedToZero(){
     retract();
     setRollerPercentSpeed(0.0);
-    m_rollerPercentSpeed = 0.0;
   }
 
   public Command extendArm(){
@@ -62,15 +61,15 @@ public class AlgaeArm extends SubsystemBase {
   }
 
   public Command rollerIntake(){
-    return new RunCommand(() -> setRollerPercentSpeed(m_ROLLERINWARDPERCENTSPEED));
+    return run(() -> setRollerPercentSpeed(m_ROLLERINWARDPERCENTSPEED));
   }
 
   public Command rollerPushOut(){
-    return new RunCommand(() -> setRollerPercentSpeed(m_ROLLEROUTWARDPERCENTSPEED));
+    return run(() -> setRollerPercentSpeed(m_ROLLEROUTWARDPERCENTSPEED));
   }
 
   public Command rollerHoldAlgae(){
-    return new RunCommand(() -> setRollerPercentSpeed(m_ROLLERHOLDINGALGAEPERCENTSPEED));
+    return run(() -> setRollerPercentSpeed(m_ROLLERHOLDINGALGAEPERCENTSPEED));
   }
 
   @Override
