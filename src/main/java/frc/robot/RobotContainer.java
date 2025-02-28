@@ -203,6 +203,8 @@ public class RobotContainer {
         armLeftBumper.onTrue(m_CoralManipulator.collectCoral());
         new Trigger(() -> m_armController.getPOV() == 180)
           .onTrue(m_CoralManipulator.dropToScoreOnReef());
+        new Trigger(() -> m_armController.getPOV() == 0)
+          .onTrue(m_CoralManipulator.goToHome());
 
     }
 
