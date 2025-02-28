@@ -43,7 +43,6 @@ public class Elevator extends SubsystemBase {
     m_SAFETOEXTENDPOSITION = m_homePosition;
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
-    //setDefaultCommand(goToDesiredPosition());
   }
 
   /*Rotations to inches for elevator motors */
@@ -83,7 +82,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command goToDesiredPosition(){
-    return new RunCommand(() -> {goToDesiredPositionInches();});
+    return new RunCommand(() -> goToDesiredPosition(), this);
   }
 
   public Command goToLowerPosition(){
@@ -126,6 +125,5 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("Is close to desired position", isCloseToDesiredPosition());
     SmartDashboard.putNumber("Desired position", m_desiredPosition);
     SmartDashboard.putNumber("Distance to desired position inches", getDistanceToDesiredPositionInches());
-    goToDesiredPosition();
   }
 }
