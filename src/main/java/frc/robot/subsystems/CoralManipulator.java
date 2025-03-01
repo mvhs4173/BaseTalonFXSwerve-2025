@@ -38,7 +38,7 @@ public class CoralManipulator extends SubsystemBase {
         m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
         m_CoralArm.armExtend().withTimeout(2.0),
         m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0) //TODO: un comment this
-      );
+      ).withName("L4");
     }
 
     /*go to L3 position, extend arm, rotate arm
@@ -48,7 +48,7 @@ public class CoralManipulator extends SubsystemBase {
       m_Elevator.goToL3Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
       m_CoralArm.armExtend().withTimeout(2.0),
       m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
-    );
+    ).withName("L3");
   }
 
   /*go to L2 position, extend arm, rotate arm
@@ -58,7 +58,7 @@ public class CoralManipulator extends SubsystemBase {
       m_Elevator.goToL2Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
       m_CoralArm.armExtend().withTimeout(2.0),
       m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
-    );
+    ).withName("L2");
   }
 
   /*go to L1 position, extend arm -- wrist rotation not neccesary because it is the trough*/
@@ -66,21 +66,21 @@ public class CoralManipulator extends SubsystemBase {
     return Commands.sequence(
       m_Elevator.goToL1Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
       m_CoralArm.armExtend().withTimeout(2.0)
-    );
+    ).withName("L1");
   }
 
   /*drop the set amount. Amount is set in Elevator.java as the value: m_DISTANCETOLOWERTOSCORE*/
   public Command dropToScoreOnReef(){
     return Commands.sequence(
       m_Elevator.goToLowerPosition()
-    );
+    ).withName("dropToScore");
   }
 
   /*make roller go outwards */
   public Command pushOutWithRollers(){
     return Commands.sequence(
       m_CoralArm.rollerPushOut()
-    );
+    ).withName("PushOut");
   }
 
   public Command goToHome(){
@@ -88,7 +88,7 @@ public class CoralManipulator extends SubsystemBase {
       m_Elevator.goToSafeToExtendPosition().withTimeout(2),
       m_CoralArm.armRetract(),
       m_Elevator.goToHomePosition()
-    );
+    ).withName("goHome");
   }
 
   @Override

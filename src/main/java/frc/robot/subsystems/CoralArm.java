@@ -67,7 +67,7 @@ public class CoralArm extends SubsystemBase {
   }
 
   public Command wristGoToPosition(double desiredPositionRotations){
-    return new RunCommand(() -> {
+    return run(() -> {
       if(Math.abs(desiredPositionRotations) > m_wristMotorRotationLimit){
         if(Math.abs(m_wristMotorRotationLimit - m_wristPosition) < m_tolerance){
           setWristPercentSpeed(0.0);
@@ -91,13 +91,13 @@ public class CoralArm extends SubsystemBase {
 
   public Command rollerIntake(){
 
-    return new RunCommand(() -> {
+    return run(() -> {
       setRollerPercentSpeed(m_ROLLERINWARDPERCENTSPEED);
     });
   }
 
   public Command rollerPushOut(){
-    return new RunCommand(() -> {
+    return run(() -> {
       setRollerPercentSpeed(m_ROLLEROUTWARDPERCENTSPEED);
     });
   }
