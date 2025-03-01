@@ -74,6 +74,11 @@ public class SparkMaxMotor extends SubsystemBase {
     m_SparkMax.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  public void setInvert(boolean inverted){
+    m_config.inverted(inverted);
+    configure();
+  }
+
   /**
    * @return number of encoder rotations per final rotation for this SparkMaxMotor
    */

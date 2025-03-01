@@ -19,23 +19,24 @@ public class Elevator extends SubsystemBase {
   private double m_homePosition;
   private final double m_INITIALPOSITION;
   private double m_desiredPosition;
-  private double m_tolerance = 0.05; //TODO: adjust these
-  private double m_upwardPercentSpeed = 6; //TODO: adjust these
-  private double m_downwardPercentSpeed = -0.5; //TODO: adjust these
+  private double m_tolerance = 0.5; //TODO: adjust these
+  private double m_upwardPercentSpeed = 0.3; //TODO: adjust these
+  private double m_downwardPercentSpeed = -0.1; //TODO: adjust these
   private final double m_SAFETOEXTENDPOSITION;
-  private final double m_COLLECTIONPOSITION = 1.0; //TODO: adjust these
-  private final double m_L1POSITION = 10.0; //TODO: adjust these
-  private final double m_L2POSITION = 20.0; //TODO: adjust these
-  private final double m_L3POSITION = 30.0; //TODO: adjust these
-  private final double m_L4POSITION = 100.0; //TODO: adjust these
-  private final double m_UPPERHEIGHTLIMIT = 110.0; //TODO: adjust these
-  private final double m_LOWERHEIGHTLIMIT = 0.5; //TODO: adjust these
-  private final double m_DISTANCETOLOWERTOSCORE = 8.0; //TODO: adjust these
+  private final double m_COLLECTIONPOSITION = -16.0; //TODO: adjust these
+  private final double m_L1POSITION = 3.0; //TODO: adjust these
+  private final double m_L2POSITION = 22.0; //TODO: adjust these
+  private final double m_L3POSITION = 37.0; //TODO: adjust these
+  private final double m_L4POSITION = 59.0; //TODO: adjust these
+  private final double m_UPPERHEIGHTLIMIT = 60.0; //TODO: adjust these
+  private final double m_LOWERHEIGHTLIMIT = -16.5; //TODO: adjust these
+  private final double m_DISTANCETOLOWERTOSCORE = 10.0; //TODO: adjust these
 
   /** Creates a new Elevator. */
   public Elevator(CANId leftCanId, CANId rightCanId) {
     m_leftMotor = new SparkMaxMotor(leftCanId, 5, "Left Elevator Motor");
     m_rightMotor = new SparkMaxMotor(rightCanId, 5, "Right Elevator Motor");
+    m_leftMotor.setInvert(false);
     m_sparkMaxMotorPair = new SparkMaxMotorPair(m_leftMotor, m_rightMotor, true);
     m_INITIALPOSITION = (m_centerStagePositionInches);
     m_homePosition = (m_INITIALPOSITION + 5);
@@ -43,6 +44,7 @@ public class Elevator extends SubsystemBase {
     m_SAFETOEXTENDPOSITION = m_homePosition;
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
+    setDefaultCommand(goToDesiredPosition());
   }
 
   /*Rotations to inches for elevator motors */
@@ -82,7 +84,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command goToDesiredPosition(){
-    return run(() -> goToDesiredPosition());
+    return run(() -> goToDesiredPositionInches());
   }
 
   public Command goToLowerPosition(){
