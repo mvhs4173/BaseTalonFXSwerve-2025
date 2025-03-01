@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AimAtAprilTag;
@@ -216,8 +217,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Translation2d translation2d = new Translation2d(2,0); //TODO: tune this. not too urgent
+        Translation2d translation2d = new Translation2d(-0.5,0); //TODO: tune this. not too urgent
         // An ExampleCommand will run in autonomous
-        return new InstantCommand(() -> s_Swerve.drive(translation2d, 0.0, false, true)); //drive forward
-    }
+        return new RunCommand(
+          () -> s_Swerve.drive(translation2d, 0.0, false, true),
+          s_Swerve
+        ).withTimeout(2); // drive forward
+      }
   }
