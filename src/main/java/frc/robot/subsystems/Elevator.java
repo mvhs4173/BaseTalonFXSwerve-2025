@@ -20,7 +20,7 @@ public class Elevator extends SubsystemBase {
   private final double m_INITIALPOSITION;
   private double m_desiredPosition;
   private double m_tolerance = 0.5; //TODO: adjust these
-  private double m_upwardPercentSpeed = 0.3; //TODO: adjust these
+  private double m_upwardPercentSpeed = 0.4; //TODO: adjust these
   private double m_downwardPercentSpeed = -0.1; //TODO: adjust these
   private final double m_SAFETOEXTENDPOSITION;
   private final double m_COLLECTIONPOSITION = -16.0; //TODO: adjust these
@@ -41,10 +41,10 @@ public class Elevator extends SubsystemBase {
     m_INITIALPOSITION = (m_centerStagePositionInches);
     m_homePosition = (m_INITIALPOSITION + 5);
     m_desiredPosition = m_INITIALPOSITION;
-    m_SAFETOEXTENDPOSITION = m_homePosition;
+    m_SAFETOEXTENDPOSITION = (m_homePosition + 2);
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
-    setDefaultCommand(goToDesiredPosition());
+    //setDefaultCommand(goToDesiredPosition());
   }
 
   /*Rotations to inches for elevator motors */

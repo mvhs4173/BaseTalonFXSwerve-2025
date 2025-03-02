@@ -187,7 +187,7 @@ public class RobotContainer {
         driveRightBumper.onTrue(m_AlgaeArm.extendArm());
         driveLeftBumper.onTrue(m_AlgaeArm.retractArm()); //Retracts arm and also sets the roller percent speed to zero
         driveX.whileTrue(m_AlgaeArm.rollerIntake());
-        driveX.whileFalse(m_AlgaeArm.rollerHoldAlgae());
+        //driveX.whileFalse(m_AlgaeArm.rollerHoldAlgae());
         driveB.whileTrue(m_AlgaeArm.rollerPushOut());
         
 
