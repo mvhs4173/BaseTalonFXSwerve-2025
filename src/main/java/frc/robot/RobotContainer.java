@@ -8,27 +8,21 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AimAtAprilTag;
+// import frc.robot.commands.AimAtAprilTag;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AlgaeArm;
-import frc.robot.subsystems.BeamBreakSensor;
-import frc.robot.subsystems.ClimberServo;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Gyro;
-import frc.robot.subsystems.Pneumatics;
-import frc.robot.subsystems.SparkMaxMotor;
+// import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.TestMotorPair;
-import frc.robot.subsystems.Vision;
+
+//import frc.robot.subsystems.Vision;
 
 /* Auto Commands */
 
@@ -40,12 +34,8 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
     /* Controllers */
-    private final XboxController m_driveController = 
-      TuningVariables.useDriveController.getBoolean() ? new XboxController(0) : null;
-    private final XboxController m_armController = 
-      TuningVariables.useArmController.getBoolean() 
-        ? new XboxController(TuningVariables.useDriveController.getBoolean() ? 1 : 0)
-        : null;
+    private final XboxController m_driveController = new XboxController(0);
+    private final XboxController m_armController = new XboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -59,79 +49,37 @@ public class RobotContainer {
     /* Arm/note handler controller buttons are defined in configureButtonBindings below */
 
     /* Subsystems */
-    private final Swerve s_Swerve = TuningVariables.useSwerve.getBoolean() ? new Swerve() : null; // set s_Swerve to null when testing arm & shooter alone
-    /*private final Shoulder m_shoulder = TuningVariables.useShoulder.getBoolean() ? new Shoulder() : null;
-    private final Shooter2 m_shooter2 = TuningVariables.useShooter2.getBoolean() ? new Shooter2() : null;
-    private final Wrist2 m_wrist2 = TuningVariables.useWrist2.getBoolean() ? new Wrist2() : null;
-    private final BeamBreakSensor m_BeamBreakSensor = new BeamBreakSensor();
-    private final CollectorRoller m_CollectorRoller = TuningVariables.useCollectorRoller.getBoolean() ? new CollectorRoller() : null;
-    private final ClimberServo m_climberServo = new ClimberServo(0);
-    private final Vision m_Vision = new Vision("AprilTagCamera");*/
-    private final Gyro m_Gyro = new Gyro(false);
-    //private final TestMotorPair m_TestMotorPair = new TestMotorPair(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR, true);
-    //private final Pneumatics m_Pneumatics = new Pneumatics(8, 1);
+    private final Swerve m_Swerve = new Swerve();
     private final CoralArm m_CoralArm = new CoralArm(CANId.CORAL_ARM_WRIST, CANId.CORAL_ROLLER, 1);
     private final Elevator m_Elevator = new Elevator(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR);
     private final CoralManipulator m_CoralManipulator = new CoralManipulator(m_Elevator, m_CoralArm);
     private final AlgaeArm m_AlgaeArm = new AlgaeArm(CANId.ALGAE_ROLLER);
-    //private final SparkMaxMotor m_SparkMaxMotorTest = new SparkMaxMotor(22, 1, "Test motor");
     /* Autos */
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
-
-    //private final Command m_Blue1AmpShotAuto = new PathPlannerAuto("Blue1AmpShotAuto");
-    //private final Command m_Blue2AmpShotAuto = new PathPlannerAuto("Blue2AmpShotAuto");
         
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        TuningVariables.setAllToDefaultValues();
-        if (s_Swerve == null){
-            System.out.println("No drivetrain object was created - check TuningVariables in Smartdashboard");
-        }
-        //if (m_shoulder == null){
-            //System.out.println("No shoulder motor objects were created - check TuningVariables in Smartdashboard");
-        //}
-        if (m_driveController == null){
-            System.out.println("No driver's Xbox controller was created, arm controller will be in port 0 - check TuningVariabls in Smartdashboard");
-        } else {
-            System.out.println("Driver's Xbox controller should be attached to port " + m_driveController.getPort());
-        }
-        if (m_armController == null) {
-            System.out.println("No arm Xbox controller was created - check TurningVariables in Smartdashboard");
-        } else {
-            System.out.println("Note manipulator's Xbox controller should be attached to port " + m_armController.getPort());
-        }
-        if (s_Swerve != null) s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_Swerve, 
-                () -> -m_driveController.getRawAxis(translationAxis), 
-                () -> -m_driveController.getRawAxis(strafeAxis), 
-                () -> -m_driveController.getRawAxis(rotationAxis) / 2.0, 
-                () -> robotCentric.getAsBoolean())
-            );
+      m_Swerve.setDefaultCommand(
+        new TeleopSwerve(
+          m_Swerve, 
+          () -> -m_driveController.getRawAxis(translationAxis), 
+          () -> -m_driveController.getRawAxis(strafeAxis), 
+          () -> -m_driveController.getRawAxis(rotationAxis) / 2.0, 
+          () -> robotCentric.getAsBoolean())
+        );
             
-        //registerNamedPathPlannerCommands();
+      //registerNamedPathPlannerCommands();
 
-        //Add commands to the autonomous command chooser
-        //m_chooser.setDefaultOption("Leave Starting Zone", new parkAuto(s_Swerve));
-        /*m_chooser.addOption("Red Amp And Intake", new redAmpPlusIntakeAuto(s_Swerve, m_shoulder, m_wrist2, m_shooter2, m_CollectorRoller, m_BeamBreakSensor));
-        m_chooser.addOption("Blue Amp And Intake", new blueAmpPlusIntakeAuto(s_Swerve, m_shoulder, m_wrist2, m_shooter2, m_CollectorRoller, m_BeamBreakSensor));
-        m_chooser.addOption("Center Speaker", new centerSpeaker(s_Swerve, m_shoulder, m_wrist2, m_shooter2));
-        m_chooser.addOption("Right Speaker", new rightSpeaker(s_Swerve, m_shoulder, m_wrist2, m_shooter2));
-        m_chooser.addOption("Left Speaker", new leftSpeaker(s_Swerve, m_shoulder, m_wrist2, m_shooter2));
-        m_chooser.addOption("Center Speaker Plus Center Note", new centerSpeakerScore2(s_Swerve, m_shoulder, m_wrist2, m_shooter2, m_CollectorRoller, m_BeamBreakSensor));
-        m_chooser.addOption("Red Speaker + Note Right", null);
-        m_chooser.addOption("Blue Speaker + Note Left", null);
-        m_chooser.addOption("Do Nothing", new compAuto(s_Swerve, m_shoulder, m_wrist2, m_shooter2, m_CollectorRoller, m_BeamBreakSensor));*/
-        //m_chooser.addOption("Amp Shot Auto", m_Blue1AmpShotAuto);
-        //m_chooser.addOption("Amp Shot 2 Auto", m_Blue2AmpShotAuto);
-        //Put the chooser on the dashboard
-        //SmartDashboard.putData(m_chooser);
+      //Add commands to the autonomous command chooser
+      //m_chooser.setDefaultOption("Leave Starting Zone", new parkAuto(s_Swerve));
+      //m_chooser.addOption("Amp Shot 2 Auto", m_Blue2AmpShotAuto);
+      //Put the chooser on the dashboard
+      //SmartDashboard.putData(m_chooser);
 
-        // Configure the button bindings
-        configureButtonBindings();
-        SmartDashboard.putData("Remove all preferences", new InstantCommand(TuningVariables::removeAllPreferences)); 
-        SmartDashboard.putData("Set All TuningVariables to default values", new InstantCommand(TuningVariables::setAllToDefaultValues)); 
-        //SmartDashboard.putData(m_Vision);
+      // Configure the button bindings
+      configureButtonBindings();
+      // Put subsystems and commands on smart dashboard
+      //SmartDashboard.putData(m_Vision);
     }
 
     //private void registerNamedPathPlannerCommands(){
@@ -161,8 +109,8 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        if (s_Swerve != null && zeroGyro != null){
-          zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        if (m_Swerve != null && zeroGyro != null){
+          zeroGyro.onTrue(new InstantCommand(() -> m_Swerve.zeroHeading()));
         }
         /* Start assuming the m_armController is not null */
         JoystickButton armA = new JoystickButton(m_armController, XboxController.Button.kA.value);
@@ -177,13 +125,8 @@ public class RobotContainer {
         JoystickButton driveLeftBumper = new JoystickButton(m_driveController, XboxController.Button.kLeftBumper.value);
         JoystickButton driveRightBumper = new JoystickButton(m_driveController, XboxController.Button.kRightBumper.value);
 
-        
-        //int aprilTagTargetId = 4;
-
       //Drive buttons:
-        
-        //driveA.whileTrue(new AimAtAprilTag(m_Vision, s_Swerve, 14, 1, aprilTagTargetId)); //allow 1 degree of error
-        driveY.onTrue(new InstantCommand(() -> m_Gyro.setYaw(0.0)));
+        driveY.onTrue(new InstantCommand(() -> m_Swerve.setYaw(0.0)));
         driveRightBumper.onTrue(m_AlgaeArm.extendArm());
         driveLeftBumper.onTrue(m_AlgaeArm.retractArm()); //Retracts arm and also sets the roller percent speed to zero
         driveX.whileTrue(m_AlgaeArm.rollerIntake());
@@ -220,8 +163,8 @@ public class RobotContainer {
         Translation2d translation2d = new Translation2d(-0.5,0); //TODO: tune this. not too urgent
         // An ExampleCommand will run in autonomous
         return new RunCommand(
-          () -> s_Swerve.drive(translation2d, 0.0, false, true),
-          s_Swerve
+          () -> m_Swerve.drive(translation2d, 0.0, false, true),
+          m_Swerve
         ).withTimeout(2); // drive forward
       }
   }

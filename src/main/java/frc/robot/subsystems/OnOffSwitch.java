@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.TuningVariables;
 /**
  * A wrapper for the DigitalInput class.  You can specify whether activated means the switch
  * is closed or open.  It also sends its state (isActivated) to SmartDashboard, tagged with its name.
@@ -45,8 +44,6 @@ public class OnOffSwitch extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (TuningVariables.debugLevel.getNumber() >= 4.0){
-      SmartDashboard.putBoolean(m_name + " (OnOffSwitch " + m_channel + ")", isActivated());
-    }
+    SmartDashboard.putBoolean(m_name + " (OnOffSwitch " + m_channel + ")", isActivated());
   }
 }

@@ -6,9 +6,7 @@ package frc.robot.commands;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;

@@ -1,17 +1,11 @@
 package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
-import frc.robot.TuningVariables;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-
-import java.util.logging.Logger;
-
-//import com.ctre.phoenix6.configs.Pigeon2Configuration;
-//import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,9 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
-    private boolean m_usePigeon = false;
-    // public Pigeon2 gyro;
-    private Gyro gyro = new Gyro(m_usePigeon);
+    private Gyro m_gyro = new Gyro();
 
     Field2d m_field = new Field2d();
 
@@ -34,9 +26,7 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putData("Field", m_field);
 
-        // gyro = new Pigeon2(Constants.Swerve.pigeonID);
-        // gyro.getConfigurator().apply(new Pigeon2Configuration());
-        gyro.setYaw(0);
+        setYaw(0);
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -68,7 +58,11 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
-    }    
+    }
+    
+    public void setYaw(double degreesCcw){
+        m_gyro.setYaw(degreesCcw);
+    }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -117,7 +111,7 @@ public class Swerve extends SubsystemBase {
 
     public Rotation2d getGyroYaw() {
         //return Rotation2d.fromDegrees(gyro.getYaw().getValue());
-        return Rotation2d.fromDegrees(gyro.getYaw());
+        return Rotation2d.fromDegrees(m_gyro.getYaw());
     }
 
     public void resetModulesToAbsolute(){
@@ -145,15 +139,12 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         m_field.setRobotPose(getPose());
-
-        if (TuningVariables.debugLevel.getNumber() >= 5.0){
-            for(SwerveModule mod : mSwerveMods){
-                SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-                SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-                SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
-                SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Drive Current", mod.getDriveCurrent());
-                SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Angle Current", mod.getAngleCurrent());    
-            }
+        for(SwerveModule mod : mSwerveMods){
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+            SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Drive Current", mod.getDriveCurrent());
+            SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Angle Current", mod.getAngleCurrent());    
         }
     }
 }

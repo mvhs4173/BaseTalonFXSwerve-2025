@@ -9,25 +9,17 @@ import java.text.DecimalFormat;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
-//import com.revrobotics.SparkRelativeEncoder;
-//import com.revrobotics.CANSparkBase.ControlType;
-//import com.revrobotics.CANSparkBase.IdleMode;
-//import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.RelativeEncoder;
-//import com.revrobotics.servohub.ServoHub.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.CANId;
-import frc.robot.TuningVariables;
 
 public class SparkMaxMotor extends SubsystemBase {
   private final String m_name;
@@ -37,7 +29,6 @@ public class SparkMaxMotor extends SubsystemBase {
   private final SparkClosedLoopController m_SparkPIDController;
   private final double m_encoderRotationsPerFinalRotation;
   private double m_zeroEncoderPosition;
-  private ClosedLoopSlot m_SmartMotionSlot;
   private DecimalFormat df2 = new DecimalFormat("#.00"); // for 2 digits after decimal in printouts
   private double m_desiredPosition = 0.0;
   private SparkMaxConfig m_config = new SparkMaxConfig();
@@ -188,12 +179,10 @@ public class SparkMaxMotor extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (TuningVariables.debugLevel.getNumber() >= 0.0) {
-      SmartDashboard.putNumber(getName() + " pos", getPosition());
-      SmartDashboard.putNumber(getName() + " vel", getVelocity());
-      SmartDashboard.putNumber(getName() + " amps", m_SparkMax.getOutputCurrent());
-      SmartDashboard.putNumber(getName() + " desired pos", m_desiredPosition);
-    }
+    SmartDashboard.putNumber(getName() + " pos", getPosition());
+    SmartDashboard.putNumber(getName() + " vel", getVelocity());
+    SmartDashboard.putNumber(getName() + " amps", m_SparkMax.getOutputCurrent());
+    SmartDashboard.putNumber(getName() + " desired pos", m_desiredPosition);
   }
 
   /**
@@ -241,38 +230,18 @@ public class SparkMaxMotor extends SubsystemBase {
   private double finalPositionToEncoderPosition(double finalPosition){
     return finalPosition * m_encoderRotationsPerFinalRotation + m_zeroEncoderPosition;
   } 
-  public void doSmartMotion(double desiredPosition, double maxVelocity, double minVelocity,
-    double maxAcceleration, double allowedClosedLoopError){
-      m_desiredPosition = desiredPosition;
-      /*m_SparkPIDController.setSmartMotionMaxVelocity(maxVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
-      m_SparkPIDController.setSmartMotionMinOutputVelocity(minVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
-      m_SparkPIDController.setSmartMotionMaxAccel(maxAcceleration * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
-      m_SparkPIDController.setSmartMotionAllowedClosedLoopError(allowedClosedLoopError/m_encoderRotationsPerFinalRotation, m_SmartMotionSlot); // what units?*/
-      m_config.closedLoop
-          .smartMotion.maxVelocity(maxVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
-      m_config.closedLoop
-          .smartMotion.minOutputVelocity(minVelocity * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
-      m_config.closedLoop
-          .smartMotion.maxAcceleration(maxAcceleration * m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);
-      m_config.closedLoop
-          .smartMotion.allowedClosedLoopError(allowedClosedLoopError/m_encoderRotationsPerFinalRotation, m_SmartMotionSlot);  
-      configure();
-      //double desiredEncoderPosition = m_desiredPosition * m_encoderRotationsPerFinalRotation + m_zeroEncoderPosition;
-      double desiredEncoderPosition = finalPositionToEncoderPosition(m_desiredPosition);
-      System.out.println("Going from encoder position " + df2.format(m_RelativeEncoder.getPosition()) + " to " + df2.format(desiredEncoderPosition));
-      m_SparkPIDController.setReference(desiredEncoderPosition, SparkMax.ControlType.kSmartMotion);
-    }
-    /**
-     * Stop pushing backward when structure has rotated down to or below minFinalPosition
-     * @param minFinalPosition - minimum allowed position.  Units are revolutions of
-     * final structure.
-     */
-    public void setAndEnableLowerSoftLimit(double minFinalPosition){
-      double minEncoderPosition = finalPositionToEncoderPosition(minFinalPosition);
-      m_config.softLimit.reverseSoftLimit((float)minEncoderPosition);
-      m_config.softLimit.reverseSoftLimitEnabled(true);
-      configure();
-    }
+  
+  /**
+   * Stop pushing backward when structure has rotated down to or below minFinalPosition
+   * @param minFinalPosition - minimum allowed position.  Units are revolutions of
+   * final structure.
+   */
+  public void setAndEnableLowerSoftLimit(double minFinalPosition){
+    double minEncoderPosition = finalPositionToEncoderPosition(minFinalPosition);
+    m_config.softLimit.reverseSoftLimit((float)minEncoderPosition);
+    m_config.softLimit.reverseSoftLimitEnabled(true);
+    configure();
+  }
     /**
      * Stop pushing forward when structure has rotated up to or past maxFinalPosition
      * @param maxFinalPosition - maximum allowed position.  Units are revolutions of
