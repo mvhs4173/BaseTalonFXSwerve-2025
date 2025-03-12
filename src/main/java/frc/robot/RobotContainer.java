@@ -145,9 +145,9 @@ public class RobotContainer {
         //other superstructure buttons:
         armRightBumper.onTrue(m_CoralManipulator.pushOutWithRollers());
         armLeftBumper.onTrue(m_CoralManipulator.collectCoral());
-        new Trigger(() -> m_armController.getPOV() == 180)
+        new Trigger(() -> m_armController.getPOV() == 180) //south
           .onTrue(m_CoralManipulator.dropToScoreOnReef());
-        new Trigger(() -> m_armController.getPOV() == 0)
+        new Trigger(() -> m_armController.getPOV() == 0) //north
           .onTrue(m_CoralManipulator.goToHome());
 
     }

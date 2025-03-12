@@ -43,7 +43,7 @@ public class Elevator extends SubsystemBase {
     m_SAFETOEXTENDPOSITION = (m_homePosition + 2);
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
-    //setDefaultCommand(goToDesiredPosition());
+    setDefaultCommand(goToDesiredPosition());
   }
 
   /*Rotations to inches for elevator motors */

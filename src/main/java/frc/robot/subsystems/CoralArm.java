@@ -19,14 +19,15 @@ public class CoralArm extends SubsystemBase {
   private final SparkMaxMotor m_rollerMotor;
   private final OnOffSwitch m_CoralDetectionSensor;
   private final double m_wristMotorRotationLimit = 0.25;
-  private final double m_ROLLERINWARDPERCENTSPEED = 0.35; //TODO: adjust these
-  private final double m_ROLLEROUTWARDPERCENTSPEED = -0.35; //TODO: adjust these
+  private final double m_ROLLERINWARDPERCENTSPEED = 0.35; 
+  private final double m_ROLLEROUTWARDPERCENTSPEED = -0.35; 
   private final double m_wristPercentSpeed = 0.1; //TODO: adjust these
   private boolean m_isExtended = false;
   private double m_wristPosition;
   private boolean m_isCoralInIntake;
   private boolean m_isWristVertical;
   private boolean m_isWristHorizontal;
+  private double m_rollerCurrentDraw;
   private double m_tolerance = (10.0 / 360.0); // May need tuning
   
 

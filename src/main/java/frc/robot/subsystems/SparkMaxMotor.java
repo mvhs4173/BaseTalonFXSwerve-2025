@@ -45,6 +45,7 @@ public class SparkMaxMotor extends SubsystemBase {
       motorType = MotorType.kBrushless;
     }*/
     m_SparkMax = new SparkMax(canId.getId(), MotorType.kBrushless);
+
     configure();
     /*m_motorType = motorType;
     if (motorType == MotorType.kBrushless){
