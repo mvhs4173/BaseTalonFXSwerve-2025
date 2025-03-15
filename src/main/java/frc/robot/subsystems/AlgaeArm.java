@@ -19,6 +19,8 @@ public class AlgaeArm extends SubsystemBase {
   private final double m_ROLLERHOLDINGALGAEPERCENTSPEED = -0.2; //TODO: adjust these
   private boolean m_isExtended = false;
   private double m_rollerPercentSpeed = 0.0;
+  private double m_algaeCurrent;
+  private final double m_HASCOLLECTEDALGAECURRENT = 50;
 
   /** Creates a new AlgaeArm. */
   public AlgaeArm(CANId rollerCAN) {
@@ -42,6 +44,10 @@ public class AlgaeArm extends SubsystemBase {
     }
   }
 
+  private double getAlgaeCurrent(){
+    return m_rollerMotor.getCurrent();
+  }
+
   private void setRollerPercentSpeed(double percent){
     m_rollerMotor.setPercentSpeed(percent);
     m_rollerPercentSpeed = percent;
@@ -62,7 +68,8 @@ public class AlgaeArm extends SubsystemBase {
   }
 
   public Command rollerIntake(){
-    return run(() -> setRollerPercentSpeed(m_ROLLERINWARDPERCENTSPEED));
+    return run(() -> setRollerPercentSpeed(
+      (getAlgaeCurrent() < m_HASCOLLECTEDALGAECURRENT) ? m_ROLLERINWARDPERCENTSPEED : m_ROLLERHOLDINGALGAEPERCENTSPEED));
   }
 
   public Command rollerStop(){
@@ -73,9 +80,9 @@ public class AlgaeArm extends SubsystemBase {
     return run(() -> setRollerPercentSpeed(m_ROLLEROUTWARDPERCENTSPEED));
   }
 
-  public Command rollerHoldAlgae(){
+  /*public Command rollerHoldAlgae(){
     return run(() -> setRollerPercentSpeed(m_ROLLERHOLDINGALGAEPERCENTSPEED));
-  }
+  }*/
 
   @Override
   public void periodic() {

@@ -164,6 +164,10 @@ public class SparkMaxMotor extends SubsystemBase {
     return m_SparkMax.getAppliedOutput() * m_SparkMax.getBusVoltage();
   }
 
+  public double getCurrent(){
+    return m_SparkMax.getOutputCurrent();
+  }
+
   /**
    * @return
    * The encoder associated with this motor controller.  You may use this
