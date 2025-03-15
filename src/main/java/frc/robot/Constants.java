@@ -3,8 +3,6 @@ package frc.robot;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-//import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,14 +18,12 @@ public final class Constants {
     public static final PneumaticsModuleType pneumaticsModuleType = PneumaticsModuleType.REVPH;
 
     public static final class Swerve {
-        //public static final int pigeonID = CANId.PIGEON.getId();
-
-        public static final COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
-        COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
+        public static final COTSTalonFXSwerveConstants chosenModule =  //This must be tuned to specific robot
+          COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = 52.5; //TODO: This must be tuned to specific robot
-        public static final double wheelBase = 73.0; //TODO: This must be tuned to specific robot
+        public static final double trackWidth = 52.5; //This must be tuned to specific robot
+        public static final double wheelBase = 73.0; //This must be tuned to specific robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /* Swerve Kinematics 
@@ -80,21 +76,21 @@ public final class Constants {
         public static final double angleKA = 0.018;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.12; //TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.12; //This must be tuned to specific robot
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
+        public static final double driveKS = 0.32; //This must be tuned to specific robot
         public static final double driveKV = 1.51;
         public static final double driveKA = 0.27;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 3.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 3.5; //This must be tuned to specific robot
         /** Radians per Second */
-        public static final double maxAngularVelocity = 0.5; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 0.5; //This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -102,7 +98,7 @@ public final class Constants {
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
-        public static final class Mod0 { //TODO: This must be tuned to specific robot
+        public static final class Mod0 { //This must be tuned to specific robot
             public static final CANId driveMotorID = CANId.FRONT_LEFT_DRIVE;
             public static final CANId angleMotorID = CANId.FRONT_LEFT_STEER;
             public static final CANId canCoderID = CANId.FRONT_LEFT_CANCODER;
@@ -112,7 +108,7 @@ public final class Constants {
         }
 
         /* Front Right Module - Module 1 */
-        public static final class Mod1 { //TODO: This must be tuned to specific robot
+        public static final class Mod1 { //This must be tuned to specific robot
             public static final CANId driveMotorID = CANId.FRONT_RIGHT_DRIVE;
             public static final CANId angleMotorID = CANId.FRONT_RIGHT_STEER;
             public static final CANId canCoderID = CANId.FRONT_RIGHT_CANCODER;
@@ -122,7 +118,7 @@ public final class Constants {
         }
         
         /* Back Left Module - Module 2 */
-        public static final class Mod2 { //TODO: This must be tuned to specific robot
+        public static final class Mod2 { //This must be tuned to specific robot
             public static final CANId driveMotorID = CANId.BACK_LEFT_DRIVE;
             public static final CANId angleMotorID = CANId.BACK_LEFT_STEER;
             public static final CANId canCoderID = CANId.BACK_LEFT_CANCODER;
@@ -132,7 +128,7 @@ public final class Constants {
         }
 
         /* Back Right Module - Module 3 */
-        public static final class Mod3 { //TODO: This must be tuned to specific robot
+        public static final class Mod3 { //This must be tuned to specific robot
             public static final CANId driveMotorID = CANId.BACK_RIGHT_DRIVE;
             public static final CANId angleMotorID = CANId.BACK_RIGHT_STEER;
             public static final CANId canCoderID = CANId.BACK_RIGHT_CANCODER;
@@ -142,7 +138,7 @@ public final class Constants {
         }
     }
 
-    public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
+    public static final class AutoConstants { //The below constants are used in the example auto, and must be tuned to specific robot
         public static final double kMaxSpeedMetersPerSecond = 2.0;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
@@ -156,138 +152,5 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-    }
-    /**
-     * Info regarding the two shooter motors: REV Neo's running in opposite directions.
-     */
-    public static final class ShooterConstants{
-        public static final MotorType kMotorType = MotorType.kBrushless;
-        public static final double encoderRotationsPerFinalRotation = 1.0;
-        public static final class Left {
-            public static final int kCANId = 11;
-            public static final String kName = "Left Shooter";
-        }
-        public static final class Right {
-            public static final int kCANId = 53;
-            public static final String kName = "Right Shooter";
-        }
-        public static final class PID {
-            // velocity PID values
-            public static final double kP = 0.000100;
-            public static final double kI = 0.000000;
-            public static final double kD = 0.000000;
-            public static final double kFeedForward = 0.000170 * 1.07;
-            public static final double kIZone = 0.000000;
-            public static final double kMinOutput = -1.0;
-            public static final double kMaxOutput = +1.0;
-        }
-    }
-    /**
-     * Info regarding the motors powering the "shoulder", the joint between the chassis and the arm.
-     * There are two motors, one at each end of a shaft, so one will be a follower of the other, in inverted mode.
-     * They are currently REV Neo's with 140:1 planetary gearboxes.
-     */
-    public static final class ShoulderConstants {
-        public static final MotorType kMotorType = MotorType.kBrushless;
-        public static final double encoderRotationsPerFinalRotation = 140.0;
-        public static final double lowerSoftLimit = -0.222; // in revolutions of shoulder
-        public static final double upperSoftLimit = 0.01;
-        public static final class Left{
-            public static final int kCANId = 52;
-            public static final String kName = "Left Shoulder";
-        }
-        public static final class Right{
-            public static final int kCANId = 62;
-            public static final String kName = "Right Shoulder";
-        }
-        public static final class PID {
-            // velocity PID values
-            public static final double kP = 0.000080; // TODO: fill in PID coefficients
-            public static final double kI = 0.000000;
-            public static final double kD = 0.000000;
-            public static final double kFeedForward = 0.000170 * 1;
-            public static final double kIZone = 0.000000;
-            public static final double kMinOutput = -1.0;
-            public static final double kMaxOutput = +1.0;
-        }
-    }
-    /**
-     * The wrist motor is a brushed 'seat motor' with a REV through bore
-     * encoder attached to its shaft.  Do the motor and encoder agree on
-     * which direction is positive?  Probably not.
-     */
-    public static class WristConstants{
-        public static final int kCANId = 59;
-        public static final MotorType kMotorType = MotorType.kBrushed;
-        public static final double encoderRotationsPerFinalRotation = 1.0;
-        public static final String kName = "Wrist";
-        //public static final SparkRelativeEncoder.Type encoderType = SparkRelativeEncoder.Type.kQuadrature;
-        
-        public static int encoderCountsPerRevolution = 8192;
-        public static double lowerSoftLimit = 0.0; // in rotations of wrist
-        public static double upperSoftLimit = 0.28;
-
-        public static final class PID {
-            // velocity PID values
-            public static final double kP = 0.000080; // TODO: fill in PID coefficients
-            public static final double kI = 0.000000;
-            public static final double kD = 0.000000;
-            public static final double kFeedForward = 0.000000;
-            public static final double kIZone = 0.000000;
-            public static final double kMinOutput = -1.0;
-            public static final double kMaxOutput = +1.0;
-        }
-        // positions are in rotations counterclockwise from zero
-        // when looked at from robot's right.
-        public static final double minSafePosition = 0.1;
-        public static final double maxSafePosition = 0.2;
-    }
-
-    /**Collector roller is a brushless motor connected to a roller 
-     * on the front of robot for intaking notes
-     */
-    public static class CollectorRollerConstants{
-        public static final int kCANId = 55;
-        public static final MotorType kMotorType = MotorType.kBrushless;
-        public static final double encoderRotationsPerFinalRotation = 10.0;
-        public static final String kName = "CollectorRoller";
-        public static final double defaultPullInSpeed = 0.8; //percent speed
-        public static final double defaultPushOutSpeed = 0.4; //percent speed
-    }
-
-    public static class BeamBreakSensorConstants{
-        public static final int channel = 0;
-        public static final boolean normallyOpen = true;
-        public static final String name = "BeamBreak";
-    }
-
-    public static class Shooter2Constants{
-        public static class UpperRoller{ // a NEO
-            public static final int kCANId = 48; // was 41 (dup of fr cancoder) until 2024-12-10
-            public static final MotorType kMotorType = MotorType.kBrushless;
-            public static final double encoderRotationsPerFinalRotation = 1.0;
-            public static final String name = "Upper Shooter2 Roller";
-        }
-        public static class LowerRoller{ // a NEO
-            public static final int kCANId = 40;
-            public static final MotorType kMotorType = MotorType.kBrushless;
-            public static final double encoderRotationsPerFinalRotation = 1.0;
-            public static final String name = "Lower Shooter2 Roller";
-        }
-        public static class Indexer{ // a NEO 550
-            public static final int kCANId = 40;
-            public static final MotorType kMotorType = MotorType.kBrushless;
-            public static final double encoderRotationsPerFinalRotation = 10.0 / 1.0 // planetary gearbox
-                                                                        * 22.0 / 48.0; // sprockets
-            public static final String name = "Shooter2 Indexer";
-        }
-    }
-    public static class Wrist2Constants{
-        public static final int kCANId = 12; // TODO : get the can id from programmers' notebook
-        public static final double encoderRotationsPerFinalRotation = 7.0 * 7.0 // planetary gearbox
-                                                                    * 48.0 / 16.0; // sprockets
-        public static final String name = "Wrist2";
-        public static double lowerSoftLimit = 0.0; // in rotations of wrist
-        public static double upperSoftLimit = 0.28; // TODO: check this empirically
     }
 }
