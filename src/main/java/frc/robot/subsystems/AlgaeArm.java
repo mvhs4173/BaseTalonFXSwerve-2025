@@ -24,6 +24,8 @@ public class AlgaeArm extends SubsystemBase {
   public AlgaeArm(CANId rollerCAN) {
     m_solenoid = new Solenoid(Constants.pneumaticsModuleType, 8);
     m_rollerMotor = new SparkMaxMotor(rollerCAN, 5, "Algae Roller");
+    m_rollerMotor.setToBrakeOnIdle(true);
+    setDefaultCommand(rollerStop());
   }
 
   private void extend(){
@@ -61,6 +63,10 @@ public class AlgaeArm extends SubsystemBase {
 
   public Command rollerIntake(){
     return run(() -> setRollerPercentSpeed(m_ROLLERINWARDPERCENTSPEED));
+  }
+
+  public Command rollerStop(){
+    return run(() -> setRollerPercentSpeed(0.0));
   }
 
   public Command rollerPushOut(){

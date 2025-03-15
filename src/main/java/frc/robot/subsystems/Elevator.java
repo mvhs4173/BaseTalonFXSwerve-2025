@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,9 +19,9 @@ public class Elevator extends SubsystemBase {
   private double m_homePosition;
   private final double m_INITIALPOSITION;
   private double m_desiredPosition;
-  private double m_tolerance = 0.5; //TODO: adjust these
-  private double m_upwardPercentSpeed = 0.4; //TODO: adjust these
-  private double m_downwardPercentSpeed = -0.1; //TODO: adjust these
+  private double m_tolerance = 0.1; //TODO: adjust these
+  private double m_upwardPercentSpeed = 0.27; //TODO: adjust these
+  private double m_downwardPercentSpeed = -0.09; //TODO: adjust these
   private final double m_SAFETOEXTENDPOSITION;
   private final double m_COLLECTIONPOSITION = -16.0; //TODO: adjust these
   private final double m_L1POSITION = 3.0; //TODO: adjust these
@@ -30,11 +31,12 @@ public class Elevator extends SubsystemBase {
   private final double m_UPPERHEIGHTLIMIT = 60.0; //TODO: adjust these
   private final double m_LOWERHEIGHTLIMIT = -16.5; //TODO: adjust these
   private final double m_DISTANCETOLOWERTOSCORE = 10.0; //TODO: adjust these
+  private double m_distanceToDesiredPosition;
 
   /** Creates a new Elevator. */
   public Elevator(CANId leftCanId, CANId rightCanId) {
-    m_leftMotor = new SparkMaxMotor(leftCanId, 5, "Left Elevator Motor");
-    m_rightMotor = new SparkMaxMotor(rightCanId, 5, "Right Elevator Motor");
+    m_leftMotor = new SparkMaxMotor(leftCanId, (9), "Left Elevator Motor");
+    m_rightMotor = new SparkMaxMotor(rightCanId, (9), "Right Elevator Motor");
     m_leftMotor.setInvert(false);
     m_sparkMaxMotorPair = new SparkMaxMotorPair(m_leftMotor, m_rightMotor, true);
     m_INITIALPOSITION = (m_centerStagePositionInches);
@@ -60,7 +62,7 @@ public class Elevator extends SubsystemBase {
   }
 
   private double getDistanceToDesiredPositionInches(){
-    return (m_desiredPosition - m_centerStagePositionInches);
+    return (Math.abs(m_desiredPosition - m_centerStagePositionInches));
   }
 
   public boolean isCloseToDesiredPosition(){
@@ -68,17 +70,16 @@ public class Elevator extends SubsystemBase {
   }
 
   private void goToDesiredPositionInches(){
-    if(m_desiredPosition < m_LOWERHEIGHTLIMIT){
-      m_desiredPosition = m_LOWERHEIGHTLIMIT;
-    } else if (m_desiredPosition > m_UPPERHEIGHTLIMIT){
-      m_desiredPosition = m_UPPERHEIGHTLIMIT;
-    }
-    if(Math.abs(m_desiredPosition - m_centerStagePositionInches) < m_tolerance){
+    MathUtil.clamp(m_desiredPosition, m_LOWERHEIGHTLIMIT, m_UPPERHEIGHTLIMIT);
+    double distanceAllowedFullSpeed = 5; //the distance from the desired position that it is allowed to go full speed
+    double p = m_distanceToDesiredPosition / distanceAllowedFullSpeed;
+    MathUtil.clamp(p, -1, 1);
+    if(m_distanceToDesiredPosition < m_tolerance){ //m_distanceToDesiredPosition is computed in periodic
       m_sparkMaxMotorPair.setPercentSpeed(0.0);
     } else if (m_desiredPosition > m_centerStagePositionInches){
-      m_sparkMaxMotorPair.setPercentSpeed(m_upwardPercentSpeed);
+      m_sparkMaxMotorPair.setPercentSpeed((p) * m_upwardPercentSpeed);
     } else if (m_desiredPosition < m_centerStagePositionInches){
-      m_sparkMaxMotorPair.setPercentSpeed(m_downwardPercentSpeed);
+      m_sparkMaxMotorPair.setPercentSpeed((p) * m_downwardPercentSpeed);
     }
   }
 
@@ -122,9 +123,10 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     m_centerStagePositionInches = getCenterStagePositionInches();
+    m_distanceToDesiredPosition = getDistanceToDesiredPositionInches();
     SmartDashboard.putNumber("Center stage position inches", m_centerStagePositionInches);
     SmartDashboard.putBoolean("Is close to desired position", isCloseToDesiredPosition());
     SmartDashboard.putNumber("Desired position", m_desiredPosition);
-    SmartDashboard.putNumber("Distance to desired position inches", getDistanceToDesiredPositionInches());
+    SmartDashboard.putNumber("Distance to desired position inches", m_distanceToDesiredPosition);
   }
 }

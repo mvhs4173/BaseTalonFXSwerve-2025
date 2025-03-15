@@ -35,9 +35,9 @@ public class CoralManipulator extends SubsystemBase {
     */
     public Command goToL4ScoringPosition(){
       return Commands.sequence(
-        m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0)
-       // m_CoralArm.armExtend().withTimeout(2.0),
-       // m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0) //TODO: un comment this
+        m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
+        m_CoralArm.armExtend().withTimeout(2.0),
+        m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0) //TODO: un comment this
       ).withName("L4");
     }
 
@@ -45,9 +45,9 @@ public class CoralManipulator extends SubsystemBase {
     */
   public Command goToL3ScoringPosition(){
     return Commands.sequence(
-      m_Elevator.goToL3Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0)
-      //m_CoralArm.armExtend().withTimeout(2.0),
-      //m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
+      m_Elevator.goToL3Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
+      m_CoralArm.armExtend().withTimeout(2.0),
+      m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
     ).withName("L3");
   }
 
@@ -55,18 +55,18 @@ public class CoralManipulator extends SubsystemBase {
     */
   public Command goToL2ScoringPosition(){
     return Commands.sequence(
-      m_Elevator.goToL2Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0)
-      //m_CoralArm.armExtend().withTimeout(2.0),
-     // m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
+      m_Elevator.goToL2Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
+      m_CoralArm.armExtend().withTimeout(2.0),
+      m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
     ).withName("L2");
   }
 
   /*go to L1 position, extend arm -- wrist rotation not neccesary because it is the trough*/
   public Command goToL1TroughScoringPosition(){
     return Commands.sequence(
-      m_Elevator.goToL1Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0)
-      //m_CoralArm.armExtend().withTimeout(2.0),
-      //m_CoralArm.wristGoToPosition(0.0).until(() -> m_CoralArm.isWristHorizontal()).withTimeout(2.0)
+      m_Elevator.goToL1Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
+      m_CoralArm.armExtend().withTimeout(2.0),
+      m_CoralArm.wristGoToPosition(0.0).until(() -> m_CoralArm.isWristHorizontal()).withTimeout(2.0)
     ).withName("L1");
   }
 
