@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +21,7 @@ public class AlgaeArm extends SubsystemBase {
   private boolean m_isExtended = false;
   private double m_rollerPercentSpeed = 0.0;
   private double m_algaeCurrent;
-  private final double m_HASCOLLECTEDALGAECURRENT = 50;
+  public AlgaeIntakeInfo algaeIntakeInfo;
 
   /** Creates a new AlgaeArm. */
   public AlgaeArm(CANId rollerCAN) {
@@ -28,7 +29,13 @@ public class AlgaeArm extends SubsystemBase {
     m_rollerMotor = new SparkMaxMotor(rollerCAN, 5, "Algae Roller");
     m_rollerMotor.setToBrakeOnIdle(true);
     setDefaultCommand(rollerStop());
+    SmartDashboard.putBoolean("Algae Roller has hit top speed", false);
+    SmartDashboard.putBoolean("Algae Roller has hit high current", false);
+    SmartDashboard.putNumber("Roller motor velocity", m_rollerMotor.getVelocity());
+    SmartDashboard.putBoolean("Roller At Top Speed", false);
   }
+
+ 
 
   private void extend(){
     if(!m_isExtended){
@@ -67,13 +74,39 @@ public class AlgaeArm extends SubsystemBase {
     return runOnce(() -> retractAndSetPercentSpeedToZero());
   }
 
+  private class AlgaeIntakeInfo {
+    public boolean hasHitTopSpeed;
+    public boolean hasHitHighCurrent;
+    public Debouncer debouncer;
+    public static final double TOP_SPEED = -850; //velocity at which it triggers hasHitTopSpeed
+    public static final double HIGH_CURRENT = 50; //Current at which it triggers hasHitHighCurrent, if hasHitTopSpeed
+    AlgaeIntakeInfo(){
+      hasHitTopSpeed = false;
+      hasHitHighCurrent = false;
+      debouncer = new Debouncer(0.1);
+    }
+  }
+
   public Command rollerIntake(){
-    return run(() -> setRollerPercentSpeed(
-      (getAlgaeCurrent() < m_HASCOLLECTEDALGAECURRENT) ? m_ROLLERINWARDPERCENTSPEED : m_ROLLERHOLDINGALGAEPERCENTSPEED));
+
+   return startRun(()->{algaeIntakeInfo = new AlgaeIntakeInfo();},() -> {
+      boolean atTopSpeed = m_rollerMotor.getVelocity() < algaeIntakeInfo.TOP_SPEED;
+      SmartDashboard.putBoolean("Roller At Top Speed", atTopSpeed);
+      algaeIntakeInfo.hasHitTopSpeed = algaeIntakeInfo.hasHitTopSpeed || atTopSpeed;
+      SmartDashboard.putNumber("Roller motor velocity", m_rollerMotor.getVelocity());
+      algaeIntakeInfo.hasHitHighCurrent =
+        algaeIntakeInfo.hasHitHighCurrent
+        || (algaeIntakeInfo.hasHitTopSpeed && algaeIntakeInfo.debouncer.calculate((getAlgaeCurrent() > algaeIntakeInfo.HIGH_CURRENT)));
+      SmartDashboard.putBoolean("Algae Roller has hit top speed", algaeIntakeInfo.hasHitTopSpeed);
+      SmartDashboard.putBoolean("Algae Roller has hit high current", algaeIntakeInfo.hasHitHighCurrent);
+      setRollerPercentSpeed(algaeIntakeInfo.hasHitHighCurrent ? m_ROLLERHOLDINGALGAEPERCENTSPEED : m_ROLLERINWARDPERCENTSPEED);
+    }).withName("Algae Roller Intake");
+
+
   }
 
   public Command rollerStop(){
-    return run(() -> setRollerPercentSpeed(0.0));
+    return run(() -> setRollerPercentSpeed(0.0)).withName("Algae Roller stop (default)");
   }
 
   public Command rollerPushOut(){
