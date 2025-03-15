@@ -20,7 +20,6 @@ public class AlgaeArm extends SubsystemBase {
   private final double m_ROLLERHOLDINGALGAEPERCENTSPEED = -0.2; //TODO: adjust these
   private boolean m_isExtended = false;
   private double m_rollerPercentSpeed = 0.0;
-  private double m_algaeCurrent;
   public AlgaeIntakeInfo algaeIntakeInfo;
 
   /** Creates a new AlgaeArm. */
@@ -29,10 +28,6 @@ public class AlgaeArm extends SubsystemBase {
     m_rollerMotor = new SparkMaxMotor(rollerCAN, 5, "Algae Roller");
     m_rollerMotor.setToBrakeOnIdle(true);
     setDefaultCommand(rollerStop());
-    SmartDashboard.putBoolean("Algae Roller has hit top speed", false);
-    SmartDashboard.putBoolean("Algae Roller has hit high current", false);
-    SmartDashboard.putNumber("Roller motor velocity", m_rollerMotor.getVelocity());
-    SmartDashboard.putBoolean("Roller At Top Speed", false);
   }
 
  
@@ -88,17 +83,13 @@ public class AlgaeArm extends SubsystemBase {
   }
 
   public Command rollerIntake(){
-
-   return startRun(()->{algaeIntakeInfo = new AlgaeIntakeInfo();},() -> {
-      boolean atTopSpeed = m_rollerMotor.getVelocity() < algaeIntakeInfo.TOP_SPEED;
-      SmartDashboard.putBoolean("Roller At Top Speed", atTopSpeed);
-      algaeIntakeInfo.hasHitTopSpeed = algaeIntakeInfo.hasHitTopSpeed || atTopSpeed;
-      SmartDashboard.putNumber("Roller motor velocity", m_rollerMotor.getVelocity());
+   return startRun(
+    ()->{algaeIntakeInfo = new AlgaeIntakeInfo();},
+    () -> {
+      algaeIntakeInfo.hasHitTopSpeed = algaeIntakeInfo.hasHitTopSpeed || (m_rollerMotor.getVelocity() < AlgaeIntakeInfo.TOP_SPEED);
       algaeIntakeInfo.hasHitHighCurrent =
         algaeIntakeInfo.hasHitHighCurrent
-        || (algaeIntakeInfo.hasHitTopSpeed && algaeIntakeInfo.debouncer.calculate((getAlgaeCurrent() > algaeIntakeInfo.HIGH_CURRENT)));
-      SmartDashboard.putBoolean("Algae Roller has hit top speed", algaeIntakeInfo.hasHitTopSpeed);
-      SmartDashboard.putBoolean("Algae Roller has hit high current", algaeIntakeInfo.hasHitHighCurrent);
+        || (algaeIntakeInfo.hasHitTopSpeed && algaeIntakeInfo.debouncer.calculate((getAlgaeCurrent() > AlgaeIntakeInfo.HIGH_CURRENT)));
       setRollerPercentSpeed(algaeIntakeInfo.hasHitHighCurrent ? m_ROLLERHOLDINGALGAEPERCENTSPEED : m_ROLLERINWARDPERCENTSPEED);
     }).withName("Algae Roller Intake");
 
