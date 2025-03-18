@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,14 +24,17 @@ public class CoralArm extends SubsystemBase {
   private final double m_ROLLERINWARDPERCENTSPEED = 0.35; 
   private final double m_ROLLEROUTWARDPERCENTSPEED = -0.35; 
   private final double m_wristPercentSpeed = 0.1; //TODO: adjust these
+  private double m_wristDesiredPercentSpeed = 0.0;
   private boolean m_isExtended = false;
   private double m_wristPosition;
   private boolean m_isCoralInIntake;
   private boolean m_isWristVertical;
   private boolean m_isWristHorizontal;
   private double m_rollerCurrentDraw;
-  private double m_tolerance = (5.0 / 360.0); // May need tuning
+  private double m_tolerance = (2.0 / 360.0); // May need tuning
   private CoralIntakeInfo m_coralIntakeInfo;
+  private double m_wristDesiredPosition = 0.0;
+
   
 
   /** Creates a new CoralArm. */
@@ -67,23 +71,26 @@ public class CoralArm extends SubsystemBase {
     }
   }
 
-  public Command wristGoToPosition(double desiredPositionRotations){
+  public Command wristGoToPosition(double r_desiredPositionRotations){
+    
     return run(() -> {
+      m_wristDesiredPosition = r_desiredPositionRotations;
+      double desiredPositionRotations = MathUtil.clamp(r_desiredPositionRotations, 0, 90.0 / 360.0);
       if(Math.abs(desiredPositionRotations) > m_wristMotorRotationLimit){
         if(Math.abs(m_wristMotorRotationLimit - m_wristPosition) < m_tolerance){
-          setWristPercentSpeed(0.0);
+          m_wristDesiredPercentSpeed = 0.0;
         } else if(m_wristMotorRotationLimit > m_wristPosition){
-          setWristPercentSpeed(m_wristPercentSpeed);
+          m_wristDesiredPercentSpeed = m_wristPercentSpeed;
         } else if(m_wristMotorRotationLimit < m_wristPosition){
-          setWristPercentSpeed(-m_wristPercentSpeed);
+          m_wristDesiredPercentSpeed = -m_wristPercentSpeed;
         }
-      } else {
+       } else {
         if(Math.abs(desiredPositionRotations - m_wristPosition) < m_tolerance){
-          setWristPercentSpeed(0.0);
+          m_wristDesiredPercentSpeed = 0.0;
         } else if(desiredPositionRotations > m_wristPosition){
-          setWristPercentSpeed(m_wristPercentSpeed);
+          m_wristDesiredPercentSpeed = m_wristPercentSpeed;
         } else if(desiredPositionRotations < m_wristPosition){
-          setWristPercentSpeed(-m_wristPercentSpeed);
+          m_wristDesiredPercentSpeed = -m_wristPercentSpeed;
         }
       }
     });
@@ -176,11 +183,13 @@ public class CoralArm extends SubsystemBase {
     m_isCoralInIntake = isCoralInIntake();
     m_isWristVertical = isWristVertical();
     m_isWristHorizontal = isWristHorizontal();
+    setWristPercentSpeed(m_wristDesiredPercentSpeed);
 
     SmartDashboard.putBoolean("Is wrist Vertical", m_isWristVertical);
     SmartDashboard.putBoolean("Is wrist Horizontal", m_isWristHorizontal);
     SmartDashboard.putBoolean("Is Coral in intake", m_isCoralInIntake);
     SmartDashboard.putNumber("Wrist Position", m_wristPosition);
     SmartDashboard.putBoolean("Is coral arm extended", m_isExtended);
+    SmartDashboard.putNumber("Wrist desired position", m_wristDesiredPosition);
   }
 }
