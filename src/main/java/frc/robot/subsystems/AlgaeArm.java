@@ -20,7 +20,7 @@ public class AlgaeArm extends SubsystemBase {
   private final double m_ROLLERHOLDINGALGAEPERCENTSPEED = -0.2; //TODO: adjust these
   private boolean m_isExtended = false;
   private double m_rollerPercentSpeed = 0.0;
-  public AlgaeIntakeInfo algaeIntakeInfo;
+  public AlgaeIntakeInfo m_algaeIntakeInfo;
 
   /** Creates a new AlgaeArm. */
   public AlgaeArm(CANId rollerCAN) {
@@ -84,13 +84,13 @@ public class AlgaeArm extends SubsystemBase {
 
   public Command rollerIntake(){
    return startRun(
-    ()->{algaeIntakeInfo = new AlgaeIntakeInfo();},
+    ()->{m_algaeIntakeInfo = new AlgaeIntakeInfo();},
     () -> {
-      algaeIntakeInfo.hasHitTopSpeed = algaeIntakeInfo.hasHitTopSpeed || (m_rollerMotor.getVelocity() < AlgaeIntakeInfo.TOP_SPEED);
-      algaeIntakeInfo.hasHitHighCurrent =
-        algaeIntakeInfo.hasHitHighCurrent
-        || (algaeIntakeInfo.hasHitTopSpeed && algaeIntakeInfo.debouncer.calculate((getAlgaeCurrent() > AlgaeIntakeInfo.HIGH_CURRENT)));
-      setRollerPercentSpeed(algaeIntakeInfo.hasHitHighCurrent ? m_ROLLERHOLDINGALGAEPERCENTSPEED : m_ROLLERINWARDPERCENTSPEED);
+      m_algaeIntakeInfo.hasHitTopSpeed = m_algaeIntakeInfo.hasHitTopSpeed || (m_rollerMotor.getVelocity() < AlgaeIntakeInfo.TOP_SPEED);
+      m_algaeIntakeInfo.hasHitHighCurrent =
+        m_algaeIntakeInfo.hasHitHighCurrent
+        || (m_algaeIntakeInfo.hasHitTopSpeed && m_algaeIntakeInfo.debouncer.calculate((getAlgaeCurrent() > AlgaeIntakeInfo.HIGH_CURRENT)));
+      setRollerPercentSpeed(m_algaeIntakeInfo.hasHitHighCurrent ? m_ROLLERHOLDINGALGAEPERCENTSPEED : m_ROLLERINWARDPERCENTSPEED);
     }).withName("Algae Roller Intake");
 
 

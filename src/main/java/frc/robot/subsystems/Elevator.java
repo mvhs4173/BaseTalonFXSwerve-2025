@@ -70,10 +70,10 @@ public class Elevator extends SubsystemBase {
   }
 
   private void goToDesiredPositionInches(){
-    MathUtil.clamp(m_desiredPosition, m_LOWERHEIGHTLIMIT, m_UPPERHEIGHTLIMIT);
+    m_desiredPosition = MathUtil.clamp(m_desiredPosition, m_LOWERHEIGHTLIMIT, m_UPPERHEIGHTLIMIT);
     double distanceAllowedFullSpeed = 5; //the distance from the desired position that it is allowed to go full speed
     double p = m_distanceToDesiredPosition / distanceAllowedFullSpeed;
-    MathUtil.clamp(p, -1, 1);
+    p = MathUtil.clamp(p, -1, 1);
     if(m_distanceToDesiredPosition < m_tolerance){ //m_distanceToDesiredPosition is computed in periodic
       m_sparkMaxMotorPair.setPercentSpeed(0.0);
     } else if (m_desiredPosition > m_centerStagePositionInches){

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +29,8 @@ public class CoralArm extends SubsystemBase {
   private boolean m_isWristVertical;
   private boolean m_isWristHorizontal;
   private double m_rollerCurrentDraw;
-  private double m_tolerance = (10.0 / 360.0); // May need tuning
+  private double m_tolerance = (5.0 / 360.0); // May need tuning
+  private CoralIntakeInfo m_coralIntakeInfo;
   
 
   /** Creates a new CoralArm. */
@@ -88,11 +90,35 @@ public class CoralArm extends SubsystemBase {
 
   }
 
-  public Command rollerIntake(){
+  private double getCoralRollerCurrent(){
+    return m_rollerMotor.getCurrent();
+  }
 
-    return run(() -> {
-      setRollerPercentSpeed(m_ROLLERINWARDPERCENTSPEED);
-    });
+   private class CoralIntakeInfo {
+    public boolean hasHitTopSpeed;
+    public boolean hasHitHighCurrent;
+    public Debouncer debouncer;
+    public static final double TOP_SPEED = 200; //velocity at which it triggers hasHitTopSpeed
+    public static final double HIGH_CURRENT = 50; //Current at which it triggers hasHitHighCurrent, if hasHitTopSpeed
+    CoralIntakeInfo(){
+      hasHitTopSpeed = false;
+      hasHitHighCurrent = false;
+      debouncer = new Debouncer(0.1);
+    }
+  }
+
+
+  public Command rollerIntake(){
+    return startRun(
+    ()->{m_coralIntakeInfo = new CoralIntakeInfo();},
+    () -> {
+      m_coralIntakeInfo.hasHitTopSpeed = m_coralIntakeInfo.hasHitTopSpeed || (m_rollerMotor.getVelocity() < CoralIntakeInfo.TOP_SPEED);
+      m_coralIntakeInfo.hasHitHighCurrent =
+      m_coralIntakeInfo.hasHitHighCurrent
+        || (m_coralIntakeInfo.hasHitTopSpeed && m_coralIntakeInfo.debouncer.calculate((getCoralRollerCurrent() > CoralIntakeInfo.HIGH_CURRENT)));
+      setRollerPercentSpeed(m_coralIntakeInfo.hasHitHighCurrent ? 0.0 : m_ROLLERINWARDPERCENTSPEED);
+    }).withName("Algae Roller Intake");
+
   }
 
   public Command rollerPushOut(){

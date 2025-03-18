@@ -10,6 +10,7 @@ NOTE: all buttons are single press and will continue to run until another of the
 - **X button** - L2 - Sends elevator to L2 position, including extending and rotating the end affector
 - **A button** - L1 - Sends elevator to L1 (trough) position, including extending arm
 - **South Pov button** - Lower - lowers the elevator by the set amount, use to put coral on the reef
+- **North Pov button** - Go to Home - rotates the wrist to horizontal, retracts the coral arm, and lowers the elevator to home position
 - **Right Bumper** - roll outwards - Makes the roller push outwards, use to release coral onto trough
 - **Left Bumper** - Collect Coral - collects a coral that is lying flat on the floor directly in front of robot and brings arm back into robot
 
