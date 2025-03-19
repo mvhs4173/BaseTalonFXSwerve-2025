@@ -37,7 +37,7 @@ public class CoralManipulator extends SubsystemBase {
       return Commands.sequence(
         m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
         m_CoralArm.armExtend().withTimeout(2.0),
-        m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0) //TODO: un comment this
+        m_CoralArm.wristGoToVerticalAndFinish().withTimeout(2.0)
       ).withName("L4");
     }
 
@@ -47,7 +47,7 @@ public class CoralManipulator extends SubsystemBase {
     return Commands.sequence(
       m_Elevator.goToL3Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
       m_CoralArm.armExtend().withTimeout(2.0),
-      m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
+      m_CoralArm.wristGoToVerticalAndFinish().withTimeout(2.0)
     ).withName("L3");
   }
 
@@ -57,7 +57,7 @@ public class CoralManipulator extends SubsystemBase {
     return Commands.sequence(
       m_Elevator.goToL2Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
       m_CoralArm.armExtend().withTimeout(2.0),
-      m_CoralArm.wristGoToPosition(0.25).until(() -> m_CoralArm.isWristVertical()).withTimeout(2.0)
+      m_CoralArm.wristGoToVerticalAndFinish().withTimeout(2.0)
     ).withName("L2");
   }
 
@@ -66,7 +66,7 @@ public class CoralManipulator extends SubsystemBase {
     return Commands.sequence(
       m_Elevator.goToL1Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
       m_CoralArm.armExtend().withTimeout(2.0),
-      m_CoralArm.wristGoToPosition(0.0).until(() -> m_CoralArm.isWristHorizontal()).withTimeout(2.0)
+      m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(2.0)
     ).withName("L1");
   }
 
@@ -86,7 +86,7 @@ public class CoralManipulator extends SubsystemBase {
 
   public Command goToHome(){
     return Commands.sequence(
-      m_CoralArm.wristGoToPosition(0.0).until(() -> m_CoralArm.isWristHorizontal()).withTimeout(2.0),
+      m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(2.0),
       m_CoralArm.armRetract(),
       m_Elevator.goToHomePosition()
     ).withName("goHome");
