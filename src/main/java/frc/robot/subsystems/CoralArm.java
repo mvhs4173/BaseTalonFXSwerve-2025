@@ -21,8 +21,8 @@ public class CoralArm extends SubsystemBase {
   private final SparkMaxMotor m_rollerMotor;
   private final OnOffSwitch m_CoralDetectionSensor;
 
-  private final double m_ROLLER_INWARD_PERCENT_SPEED =  +0.35; 
-  private final double m_ROLLER_OUTWARD_PERCENT_SPEED = -0.35; 
+  private final double m_ROLLER_INWARD_PERCENT_SPEED =  -0.35; 
+  private final double m_ROLLER_OUTWARD_PERCENT_SPEED = +0.35; 
 
   private boolean m_isExtended = false;
   //private boolean m_isCoralInIntake = false;
@@ -32,7 +32,7 @@ public class CoralArm extends SubsystemBase {
 
   private final double m_WRIST_LOWER_POSITION_LIMIT =  0.00;
   private final double m_WRIST_UPPER_POSITION_LIMIT = +0.25;
-  private final double m_WRIST_POSITION_TOLERANCE = (2.0 / 360.0); // May need tuning 
+  private final double m_WRIST_POSITION_TOLERANCE = (1.0 / 360.0); // May need tuning 
   private double m_wristDesiredPositionRotations = 0.0;
   private double m_wristPositionRotations;
 
@@ -44,12 +44,12 @@ public class CoralArm extends SubsystemBase {
   /** Creates a new CoralArm. */
   public CoralArm(CANId wristCAN, CANId rollerCAN, int OnOffSwitchChannel) {
     m_Solenoid = new Solenoid(Constants.pneumaticsModuleType, 0);
-    m_wristMotor = new SparkMaxMotor(wristCAN, (5*5), "Wrist Motor");
+    m_wristMotor = new SparkMaxMotor(wristCAN, 5.0*5.0, "Wrist Motor");
     m_rollerMotor = new SparkMaxMotor(rollerCAN, 5, "Roller Motor");
     m_wristMotor.setToBrakeOnIdle(true);
     m_rollerMotor.setToBrakeOnIdle(true);
     m_CoralDetectionSensor = new OnOffSwitch(OnOffSwitchChannel, true, "Coral Detection Sensor");
-    setDefaultCommand(wristGoToDesiredPositionAndHold());
+    setDefaultCommand(run(() -> wristGoTowardsDesiredPosition()));
   }
 
   private void extend(){
@@ -71,11 +71,12 @@ public class CoralArm extends SubsystemBase {
   }
 
   private void setWristPercentSpeed(double percent){
-    if (Math.abs(m_wristPositionRotations) < m_WRIST_LOWER_POSITION_LIMIT){
-      m_wristMotor.setPercentSpeed(percent);
-    }
+      m_wristMotor.setPercentSpeed(percent); 
   }
 
+  private void wristSetDesiredPosition(double desiredPositionRotations){
+    m_wristDesiredPositionRotations = MathUtil.clamp(desiredPositionRotations, m_WRIST_LOWER_POSITION_LIMIT, m_WRIST_UPPER_POSITION_LIMIT);
+  }
   /**
    * Set wrist motor speed to head towards the m_wristDesiredPositionRotations.
    * We expect the speed to be sent to the motor controller by periodic().
@@ -92,15 +93,20 @@ public class CoralArm extends SubsystemBase {
     }
   }
 
-  public Command wristGoToDesiredPositionAndHold(){
-    return run(() -> {
-      wristGoTowardsDesiredPosition();
-    });
+  public Command wristGoToPositionAndHold(double desiredPositionRotations){
+    return startRun(
+      () -> {
+        wristSetDesiredPosition(desiredPositionRotations);
+        System.out.println("wrist go to " + desiredPositionRotations + " and hold");
+      },
+      () -> {
+        wristGoTowardsDesiredPosition();
+      });
   }
 
   public Command wristGoToPositionAndFinish(double desiredPositionRotations){
-    m_wristDesiredPositionRotations = MathUtil.clamp(desiredPositionRotations, m_WRIST_LOWER_POSITION_LIMIT, m_WRIST_UPPER_POSITION_LIMIT);
-    return wristGoToDesiredPositionAndHold().until(() -> isWristAtDesiredPosition());
+    System.out.println("arg=" + desiredPositionRotations);
+    return wristGoToPositionAndHold(desiredPositionRotations).until(() -> isWristAtDesiredPosition());
   }
 
   public Command wristGoToHorizontalAndFinish(){
@@ -154,7 +160,8 @@ public class CoralArm extends SubsystemBase {
   public Command rollerPushOut(){
     return run(() -> {
       setRollerPercentSpeed(m_ROLLER_OUTWARD_PERCENT_SPEED);
-    });
+    })
+    .finallyDo(() -> setRollerPercentSpeed(0.0));
   }
 
   public Command armExtend(){
@@ -212,5 +219,6 @@ public class CoralArm extends SubsystemBase {
 
     SmartDashboard.putNumber("Wrist position", m_wristPositionRotations);
     SmartDashboard.putNumber("Wrist desired position", m_wristDesiredPositionRotations);
+    SmartDashboard.putNumber("Wrist desired speed", m_wristDesiredPercentSpeed);
   }
 }

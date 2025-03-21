@@ -60,6 +60,8 @@ public class RobotContainer {
         
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+      SmartDashboard.putData("CoralArm", m_CoralArm);
+      SmartDashboard.putData("CoralManipulator", m_CoralManipulator);
       m_Swerve.setDefaultCommand(
         new TeleopSwerve(
           m_Swerve, 
@@ -145,7 +147,7 @@ public class RobotContainer {
         armA.onTrue(m_CoralManipulator.goToL1TroughScoringPosition()); //L1
 
         //other superstructure buttons:
-        armRightBumper.onTrue(m_CoralManipulator.pushOutWithRollers());
+        armRightBumper.whileTrue(m_CoralManipulator.pushOutWithRollers());
         armLeftBumper.onTrue(m_CoralManipulator.collectCoral());
         new Trigger(() -> m_armController.getPOV() == 180) //south
           .onTrue(m_CoralManipulator.dropToScoreOnReef());

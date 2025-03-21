@@ -20,7 +20,7 @@ public class Elevator extends SubsystemBase {
   private final double m_INITIALPOSITION;
   private double m_desiredPosition;
   private double m_tolerance = 0.1; //TODO: adjust these
-  private double m_upwardPercentSpeed = 0.27; //TODO: adjust these
+  private double m_upwardPercentSpeed = 0.17; //TODO: adjust these 
   private double m_downwardPercentSpeed = -0.09; //TODO: adjust these
   private final double m_SAFETOEXTENDPOSITION;
   private final double m_COLLECTIONPOSITION = -16.0; //TODO: adjust these
@@ -71,9 +71,9 @@ public class Elevator extends SubsystemBase {
 
   private void goToDesiredPositionInches(){
     m_desiredPosition = MathUtil.clamp(m_desiredPosition, m_LOWERHEIGHTLIMIT, m_UPPERHEIGHTLIMIT);
-    double distanceAllowedFullSpeed = 5; //the distance from the desired position that it is allowed to go full speed
+    double distanceAllowedFullSpeed = 2; //the distance from the desired position that it is allowed to go full speed
     double p = m_distanceToDesiredPosition / distanceAllowedFullSpeed;
-    p = MathUtil.clamp(p, -1, 1);
+    p = MathUtil.clamp(p, 0.0, 1.0);
     if(m_distanceToDesiredPosition < m_tolerance){ //m_distanceToDesiredPosition is computed in periodic
       m_sparkMaxMotorPair.setPercentSpeed(0.0);
     } else if (m_desiredPosition > m_centerStagePositionInches){
@@ -126,7 +126,7 @@ public class Elevator extends SubsystemBase {
     m_distanceToDesiredPosition = getDistanceToDesiredPositionInches();
     SmartDashboard.putNumber("Center stage position inches", m_centerStagePositionInches);
     SmartDashboard.putBoolean("Is close to desired position", isCloseToDesiredPosition());
-    SmartDashboard.putNumber("Desired position", m_desiredPosition);
-    SmartDashboard.putNumber("Distance to desired position inches", m_distanceToDesiredPosition);
+    SmartDashboard.putNumber("Elev. Desired position", m_desiredPosition);
+    SmartDashboard.putNumber("Elev. Distance to desired position inches", m_distanceToDesiredPosition);
   }
 }

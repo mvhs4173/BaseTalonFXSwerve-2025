@@ -22,11 +22,23 @@ public class CoralManipulator extends SubsystemBase {
    for the purpose of grabbing a horizontal-laying coral on the floor directly in front of the robot*/
   public Command collectCoral(){
     return Commands.sequence(
-      m_Elevator.goToSafeToExtendPosition().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(2.0),
-      m_CoralArm.armExtend().withTimeout(2.0),
-      m_Elevator.goToCollectionPosition().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(2.0),
-      m_CoralArm.rollerIntake().until(() -> m_CoralArm.isCoralInIntake()).withTimeout(2.0),
-      m_Elevator.goToSafeToExtendPosition().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(2.0),
+      m_Elevator.goToSafeToExtendPosition()
+        .until(() -> m_Elevator.isCloseToDesiredPosition())
+        .withTimeout(2.0),
+      m_CoralArm
+        .armExtend()
+        .withTimeout(1.0),
+      m_Elevator
+        .goToCollectionPosition()
+        .until(() -> m_Elevator.isCloseToDesiredPosition()).
+        withTimeout(2.0),
+      m_CoralArm
+        .rollerIntake()
+        .until(() -> m_CoralArm.isCoralInIntake())
+        .withTimeout(5.0), // was 2
+      m_Elevator.goToSafeToExtendPosition()
+        .until(() -> m_Elevator.isCloseToDesiredPosition())
+        .withTimeout(2.0),
       m_CoralArm.armRetract()
     ).withName("Collect Coral command");
   }
