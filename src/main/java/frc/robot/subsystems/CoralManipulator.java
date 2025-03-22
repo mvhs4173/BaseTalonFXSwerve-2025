@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.CommandLogger;
 
 public class CoralManipulator extends SubsystemBase {
   private Elevator m_Elevator;
@@ -21,25 +22,34 @@ public class CoralManipulator extends SubsystemBase {
    go to safe extension position, retract
    for the purpose of grabbing a horizontal-laying coral on the floor directly in front of the robot*/
   public Command collectCoral(){
+    Command safeToExtArmPose = m_Elevator.goToSafeToExtendPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(2));
+    Command ExtendArm = m_CoralArm.armExtend().andThen(Commands.waitSeconds(1));
+    Command LowerElevator = m_Elevator.goToCollectionPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(2)\[]
+    );
+    Command RollIntake = m_CoralArm.rollerIntake().until(()->m_CoralArm.isCoralInIntake()).withTimeout(5);
     return Commands.sequence(
-      m_Elevator.goToSafeToExtendPosition()
+    CommandLogger.logCommand(safeToExtArmPose, "safeToExtArmPose"),
+    CommandLogger.logCommand(ExtendArm, "ExtendArm"),
+    CommandLogger.logCommand(LowerElevator, "LowerElevator"),
+    CommandLogger.logCommand(RollIntake, "RollIntake")
+      //m_Elevator.goToSafeToExtendPosition()
+        //.until(() -> m_Elevator.isCloseToDesiredPosition()),
+        //.withTimeout(2.0),
+      // m_CoralArm
+      //   .armExtend()
+      //   .withTimeout(1.0),
+      // m_Elevator
+      //   .goToCollectionPosition()
+      //   .until(() -> m_Elevator.isCloseToDesiredPosition()).
+      //   withTimeout(2.0),
+      // m_CoralArm
+      //   .rollerIntake()
+      //   .until(() -> m_CoralArm.isCoralInIntake())
+      //   .withTimeout(5.0) // was 2
+      /*m_Elevator.goToSafeToExtendPosition()
         .until(() -> m_Elevator.isCloseToDesiredPosition())
         .withTimeout(2.0),
-      m_CoralArm
-        .armExtend()
-        .withTimeout(1.0),
-      m_Elevator
-        .goToCollectionPosition()
-        .until(() -> m_Elevator.isCloseToDesiredPosition()).
-        withTimeout(2.0),
-      m_CoralArm
-        .rollerIntake()
-        .until(() -> m_CoralArm.isCoralInIntake())
-        .withTimeout(5.0), // was 2
-      m_Elevator.goToSafeToExtendPosition()
-        .until(() -> m_Elevator.isCloseToDesiredPosition())
-        .withTimeout(2.0),
-      m_CoralArm.armRetract()
+      m_CoralArm.armRetract()*/
     ).withName("Collect Coral command");
   }
 

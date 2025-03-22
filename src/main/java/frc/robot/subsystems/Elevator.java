@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANId;
 
@@ -16,23 +17,25 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxMotor m_rightMotor;
   private final SparkMaxMotorPair m_sparkMaxMotorPair;
   private double m_centerStagePositionInches;
-  private double m_homePosition;
-  private final double m_INITIALPOSITION;
+  private final double m_INITIALPOSITION = 16;
+  private final double m_homePosition = (m_INITIALPOSITION + 5);
   private double m_desiredPosition;
-  private double m_tolerance = 0.1; //TODO: adjust these
+  private final double m_tolerance = 0.1; //TODO: adjust these
   private double m_upwardPercentSpeed = 0.17; //TODO: adjust these 
   private double m_downwardPercentSpeed = -0.12; //TODO: adjust these
   private double m_desiredPercentSpeed = 0.0;
-  private final double m_SAFETOEXTENDPOSITION;
-  private final double m_COLLECTIONPOSITION = -16.0; //TODO: adjust these
-  private final double m_L1POSITION = 3.0; //TODO: adjust these
-  private final double m_L2POSITION = 22.0; //TODO: adjust these
-  private final double m_L3POSITION = 37.0; //TODO: adjust these
-  private final double m_L4POSITION = 59.0; //TODO: adjust these
-  private final double m_UPPERHEIGHTLIMIT = 60.0; //TODO: adjust these
-  private final double m_LOWERHEIGHTLIMIT = -16.5; //TODO: adjust these
+  private final double m_SAFETOEXTENDPOSITION = (m_homePosition + 2);
+  private final double m_ELEVATOR_POSITION_OFFSET = 16;
+  private final double m_COLLECTIONPOSITION = -16.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_L1POSITION = 3.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_L2POSITION = 22.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_L3POSITION = 37.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_L4POSITION = 59.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_UPPERHEIGHTLIMIT = 60.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_LOWERHEIGHTLIMIT = -16.5 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_DISTANCETOLOWERTOSCORE = 10.0; //TODO: adjust these
   private double m_distanceToDesiredPosition;
+
 
   /** Creates a new Elevator. */
   public Elevator(CANId leftCanId, CANId rightCanId) {
@@ -40,13 +43,13 @@ public class Elevator extends SubsystemBase {
     m_rightMotor = new SparkMaxMotor(rightCanId, (9), "Right Elevator Motor");
     m_leftMotor.setInvert(false);
     m_sparkMaxMotorPair = new SparkMaxMotorPair(m_leftMotor, m_rightMotor, true);
-    m_INITIALPOSITION = (m_centerStagePositionInches);
-    m_homePosition = (m_INITIALPOSITION + 5);
     m_desiredPosition = m_INITIALPOSITION;
-    m_SAFETOEXTENDPOSITION = (m_homePosition + 2);
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
     setDefaultCommand(goToDesiredPosition());
+    SmartDashboard.putNumber("Elevator percent speed ", 0);
+    SmartDashboard.putNumber("Elevator p value ", 0);
+    SmartDashboard.putString("IntendedElevatorDirection", "stay");
   }
 
   /*Rotations to inches for elevator motors */
@@ -59,7 +62,7 @@ public class Elevator extends SubsystemBase {
   }
 
   private double getCenterStagePositionInches(){
-    return (rotationsToInches(m_leftMotor.getPosition()));
+    return (rotationsToInches(m_leftMotor.getPosition()) + m_ELEVATOR_POSITION_OFFSET);
   }
 
   private double getDistanceToDesiredPositionInches(){
@@ -73,17 +76,23 @@ public class Elevator extends SubsystemBase {
   private void goToDesiredPositionInches(){
     m_desiredPosition = MathUtil.clamp(m_desiredPosition, m_LOWERHEIGHTLIMIT, m_UPPERHEIGHTLIMIT);
     double distanceAllowedFullSpeed = 1; //the distance from the desired position that it is allowed to go full speed
+    m_distanceToDesiredPosition = Math.abs(m_distanceToDesiredPosition);
     double p = m_distanceToDesiredPosition / distanceAllowedFullSpeed;
     p = Math.abs(p);
     p = MathUtil.clamp(p, 0.0, 1.0);
+    SmartDashboard.putNumber("Elevator p value ", p);
     if(m_distanceToDesiredPosition < m_tolerance){ //m_distanceToDesiredPosition is computed in periodic
       m_desiredPercentSpeed = 0.0;
+      SmartDashboard.putString("IntendedElevatorDirection", "stay");
     } else if (m_desiredPosition > m_centerStagePositionInches){
       m_desiredPercentSpeed = p * m_upwardPercentSpeed;
+      SmartDashboard.putString("IntendedElevatorDirection", "up");
     } else if (m_desiredPosition < m_centerStagePositionInches){
+      SmartDashboard.putString("IntendedElevatorDirection", "down");
       m_desiredPercentSpeed = p * m_downwardPercentSpeed;
     }
     m_sparkMaxMotorPair.setPercentSpeed(m_desiredPercentSpeed);
+    SmartDashboard.putNumber("Elevator percent speed: ", m_desiredPercentSpeed);
   }
 
   public Command goToDesiredPosition(){
@@ -111,11 +120,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command goToCollectionPosition(){
-    return runOnce(() -> {m_desiredPosition = m_COLLECTIONPOSITION;});
+    return new InstantCommand(() -> {m_desiredPosition = m_COLLECTIONPOSITION;});
   }
 
   public Command goToSafeToExtendPosition(){
-    return runOnce(() -> {m_desiredPosition = m_SAFETOEXTENDPOSITION;});
+    return new InstantCommand(() -> {m_desiredPosition = m_SAFETOEXTENDPOSITION;});
   }
 
   public Command goToHomePosition(){
@@ -131,6 +140,5 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("Is close to desired position", isCloseToDesiredPosition());
     SmartDashboard.putNumber("Elev. Desired position", m_desiredPosition);
     SmartDashboard.putNumber("Elev. Distance to desired position inches", m_distanceToDesiredPosition);
-    SmartDashboard.putNumber("Elev. Desired speed", m_desiredPercentSpeed);
-  }
+    SmartDashboard.putNumber("Elev. Desired speed", m_desiredPercentSpeed);}
 }
