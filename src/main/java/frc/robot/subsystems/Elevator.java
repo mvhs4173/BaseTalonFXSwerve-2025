@@ -21,7 +21,8 @@ public class Elevator extends SubsystemBase {
   private double m_desiredPosition;
   private double m_tolerance = 0.1; //TODO: adjust these
   private double m_upwardPercentSpeed = 0.17; //TODO: adjust these 
-  private double m_downwardPercentSpeed = -0.09; //TODO: adjust these
+  private double m_downwardPercentSpeed = -0.12; //TODO: adjust these
+  private double m_desiredPercentSpeed = 0.0;
   private final double m_SAFETOEXTENDPOSITION;
   private final double m_COLLECTIONPOSITION = -16.0; //TODO: adjust these
   private final double m_L1POSITION = 3.0; //TODO: adjust these
@@ -71,16 +72,18 @@ public class Elevator extends SubsystemBase {
 
   private void goToDesiredPositionInches(){
     m_desiredPosition = MathUtil.clamp(m_desiredPosition, m_LOWERHEIGHTLIMIT, m_UPPERHEIGHTLIMIT);
-    double distanceAllowedFullSpeed = 2; //the distance from the desired position that it is allowed to go full speed
+    double distanceAllowedFullSpeed = 1; //the distance from the desired position that it is allowed to go full speed
     double p = m_distanceToDesiredPosition / distanceAllowedFullSpeed;
+    p = Math.abs(p);
     p = MathUtil.clamp(p, 0.0, 1.0);
     if(m_distanceToDesiredPosition < m_tolerance){ //m_distanceToDesiredPosition is computed in periodic
-      m_sparkMaxMotorPair.setPercentSpeed(0.0);
+      m_desiredPercentSpeed = 0.0;
     } else if (m_desiredPosition > m_centerStagePositionInches){
-      m_sparkMaxMotorPair.setPercentSpeed((p) * m_upwardPercentSpeed);
+      m_desiredPercentSpeed = p * m_upwardPercentSpeed;
     } else if (m_desiredPosition < m_centerStagePositionInches){
-      m_sparkMaxMotorPair.setPercentSpeed((p) * m_downwardPercentSpeed);
+      m_desiredPercentSpeed = p * m_downwardPercentSpeed;
     }
+    m_sparkMaxMotorPair.setPercentSpeed(m_desiredPercentSpeed);
   }
 
   public Command goToDesiredPosition(){
@@ -128,5 +131,6 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("Is close to desired position", isCloseToDesiredPosition());
     SmartDashboard.putNumber("Elev. Desired position", m_desiredPosition);
     SmartDashboard.putNumber("Elev. Distance to desired position inches", m_distanceToDesiredPosition);
+    SmartDashboard.putNumber("Elev. Desired speed", m_desiredPercentSpeed);
   }
 }

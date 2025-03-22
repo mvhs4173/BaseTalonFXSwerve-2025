@@ -32,7 +32,7 @@ public class CoralArm extends SubsystemBase {
 
   private final double m_WRIST_LOWER_POSITION_LIMIT =  0.00;
   private final double m_WRIST_UPPER_POSITION_LIMIT = +0.25;
-  private final double m_WRIST_POSITION_TOLERANCE = (1.0 / 360.0); // May need tuning 
+  private final double m_WRIST_POSITION_TOLERANCE = (2.0 / 360.0); // May need tuning 
   private double m_wristDesiredPositionRotations = 0.0;
   private double m_wristPositionRotations;
 
