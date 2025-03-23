@@ -58,8 +58,8 @@ public final class Constants {
 
         /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
-        public static final double openLoopRamp = 0.4;
-        public static final double closedLoopRamp = 0.4;
+        public static final double openLoopRamp = 0.2;
+        public static final double closedLoopRamp = 0.2;
         /*Let's allow ramp control on angle motors as well.
          * "Ramp" is number of seconds between stopped and full speed */
         public static final double angleOpenLoopRamp = 0.2;
@@ -88,7 +88,7 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 3.5; //This must be tuned to specific robot
+        public static final double maxSpeed = 4.5; //This must be tuned to specific robot
         /** Radians per Second */
         public static final double maxAngularVelocity = 0.5; //This must be tuned to specific robot
 

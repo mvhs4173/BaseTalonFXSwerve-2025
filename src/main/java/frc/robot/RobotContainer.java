@@ -56,7 +56,8 @@ public class RobotContainer {
     private final Elevator m_Elevator = null;
     //private final CoralManipulator m_CoralManipulator = new CoralManipulator(m_Elevator, m_CoralArm);
     private final CoralManipulator m_CoralManipulator = null;
-    private final AlgaeArm m_AlgaeArm = new AlgaeArm(CANId.ALGAE_ROLLER);
+    //private final AlgaeArm m_AlgaeArm = new AlgaeArm(CANId.ALGAE_ROLLER);
+    private final AlgaeArm m_AlgaeArm = null;
     /* Autos */
    // private final SendableChooser<Command> m_chooser = new SendableChooser<>();
         
@@ -71,10 +72,12 @@ public class RobotContainer {
           m_Swerve, 
           () -> -m_driveController.getRawAxis(translationAxis), 
           () -> -m_driveController.getRawAxis(strafeAxis), 
-          () -> -m_driveController.getRawAxis(rotationAxis) / 2.0, 
+          () -> -m_driveController.getRawAxis(rotationAxis) / 3.0, //originally 2
           () -> robotCentric.getAsBoolean())
         );
-      SmartDashboard.putData(m_AlgaeArm);
+        if(m_AlgaeArm != null){
+         SmartDashboard.putData(m_AlgaeArm);
+        }
             
       //registerNamedPathPlannerCommands();
 
@@ -135,12 +138,13 @@ public class RobotContainer {
 
       //Drive buttons:
         driveY.onTrue(new InstantCommand(() -> m_Swerve.setYaw(0.0)));
-        driveRightBumper.onTrue(m_AlgaeArm.extendArm());
-        driveLeftBumper.onTrue(m_AlgaeArm.retractArm()); //Retracts arm and also sets the roller percent speed to zero
-        driveX.whileTrue(m_AlgaeArm.rollerIntake());
-        //driveX.whileFalse(m_AlgaeArm.rollerHoldAlgae());
-        driveB.whileTrue(m_AlgaeArm.rollerPushOut());
-        
+        if(m_AlgaeArm != null){
+          driveRightBumper.onTrue(m_AlgaeArm.extendArm());
+          driveLeftBumper.onTrue(m_AlgaeArm.retractArm()); //Retracts arm and also sets the roller percent speed to zero
+          driveX.whileTrue(m_AlgaeArm.rollerIntake());
+          //driveX.whileFalse(m_AlgaeArm.rollerHoldAlgae());
+          driveB.whileTrue(m_AlgaeArm.rollerPushOut());
+        }
 
       //Superstructure buttons:
       if(m_CoralManipulator != null){
