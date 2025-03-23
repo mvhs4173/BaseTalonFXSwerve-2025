@@ -16,6 +16,7 @@ public class Elevator extends SubsystemBase {
   private final SparkMaxMotor m_leftMotor;
   private final SparkMaxMotor m_rightMotor;
   private final SparkMaxMotorPair m_sparkMaxMotorPair;
+
   private double m_centerStagePositionInches;
   private final double m_INITIALPOSITION = 16;
   private final double m_homePosition = (m_INITIALPOSITION + 5);
@@ -26,7 +27,7 @@ public class Elevator extends SubsystemBase {
   private double m_desiredPercentSpeed = 0.0;
   private final double m_SAFETOEXTENDPOSITION = (m_homePosition + 2);
   private final double m_ELEVATOR_POSITION_OFFSET = 16;
-  private final double m_COLLECTIONPOSITION = -16.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_COLLECTIONPOSITION = -19 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_L1POSITION = 3.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_L2POSITION = 22.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_L3POSITION = 37.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these

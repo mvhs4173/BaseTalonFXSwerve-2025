@@ -24,12 +24,13 @@ public class CoralManipulator extends SubsystemBase {
   public Command collectCoral(){
     Command safeToExtArmPose = m_Elevator.goToSafeToExtendPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(2));
     Command ExtendArm = m_CoralArm.armExtend().andThen(Commands.waitSeconds(1));
-    Command LowerElevator = m_Elevator.goToCollectionPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(2)\[]
-    );
+    Command WristHorizontal = m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(2);
+    Command LowerElevator = m_Elevator.goToCollectionPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(2));
     Command RollIntake = m_CoralArm.rollerIntake().until(()->m_CoralArm.isCoralInIntake()).withTimeout(5);
     return Commands.sequence(
     CommandLogger.logCommand(safeToExtArmPose, "safeToExtArmPose"),
     CommandLogger.logCommand(ExtendArm, "ExtendArm"),
+    CommandLogger.logCommand(WristHorizontal, "Wrist go to horizontal"),
     CommandLogger.logCommand(LowerElevator, "LowerElevator"),
     CommandLogger.logCommand(RollIntake, "RollIntake")
       //m_Elevator.goToSafeToExtendPosition()
