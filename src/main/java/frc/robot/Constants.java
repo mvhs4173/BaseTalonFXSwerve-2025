@@ -58,8 +58,8 @@ public final class Constants {
 
         /* These values are used by the drive falcon to ramp in open loop and closed loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc */
-        public static final double openLoopRamp = 0.2;
-        public static final double closedLoopRamp = 0.2;
+        public static final double openLoopRamp = 0.4;
+        public static final double closedLoopRamp = 0.4;
         /*Let's allow ramp control on angle motors as well.
          * "Ramp" is number of seconds between stopped and full speed */
         public static final double angleOpenLoopRamp = 0.2;

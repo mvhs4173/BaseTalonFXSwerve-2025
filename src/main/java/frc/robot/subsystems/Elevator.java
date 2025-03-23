@@ -47,7 +47,7 @@ public class Elevator extends SubsystemBase {
     m_desiredPosition = m_INITIALPOSITION;
     m_leftMotor.setToBrakeOnIdle(true);
     m_rightMotor.setToBrakeOnIdle(true);
-    setDefaultCommand(goToDesiredPosition());
+    //setDefaultCommand(goToDesiredPosition());
     SmartDashboard.putNumber("Elevator percent speed ", 0);
     SmartDashboard.putNumber("Elevator p value ", 0);
     SmartDashboard.putString("IntendedElevatorDirection", "stay");

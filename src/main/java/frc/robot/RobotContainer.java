@@ -52,16 +52,20 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve m_Swerve = new Swerve();
     private final CoralArm m_CoralArm = new CoralArm(CANId.CORAL_ARM_WRIST, CANId.CORAL_ROLLER, 1);
-    private final Elevator m_Elevator = new Elevator(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR);
-    private final CoralManipulator m_CoralManipulator = new CoralManipulator(m_Elevator, m_CoralArm);
+    //private final Elevator m_Elevator = new Elevator(CANId.LEFT_ELEVATOR, CANId.RIGHT_ELEVATOR);
+    private final Elevator m_Elevator = null;
+    //private final CoralManipulator m_CoralManipulator = new CoralManipulator(m_Elevator, m_CoralArm);
+    private final CoralManipulator m_CoralManipulator = null;
     private final AlgaeArm m_AlgaeArm = new AlgaeArm(CANId.ALGAE_ROLLER);
     /* Autos */
-    private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+   // private final SendableChooser<Command> m_chooser = new SendableChooser<>();
         
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
       SmartDashboard.putData("CoralArm", m_CoralArm);
-      SmartDashboard.putData("CoralManipulator", m_CoralManipulator);
+      if(m_CoralManipulator != null){
+        SmartDashboard.putData("CoralManipulator", m_CoralManipulator);
+      }
       m_Swerve.setDefaultCommand(
         new TeleopSwerve(
           m_Swerve, 
@@ -139,7 +143,7 @@ public class RobotContainer {
         
 
       //Superstructure buttons:
-
+      if(m_CoralManipulator != null){
         //the following all just go to the position and do not actually score it
         armY.onTrue(m_CoralManipulator.goToL4ScoringPosition()); //L4
         armB.onTrue(m_CoralManipulator.goToL3ScoringPosition()); //L3
@@ -153,7 +157,7 @@ public class RobotContainer {
           .onTrue(m_CoralManipulator.dropToScoreOnReef());
         new Trigger(() -> m_armController.getPOV() == 0) //north
           .onTrue(m_CoralManipulator.goToHome());
-
+      }
     }
 
 
