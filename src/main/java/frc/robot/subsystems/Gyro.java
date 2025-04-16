@@ -29,6 +29,12 @@ public class Gyro extends SubsystemBase {
   private double getYawNavX() {
     return -m_navX.getYaw() + m_yawOffsetNavX;
   }
+
+  
+  private double getRate(){
+    return m_navX.getRate(); //returns the rate of change of the yaw in degrees per second
+  }
+
   public double getYaw(){
     return getYawNavX();
   }
@@ -82,7 +88,9 @@ public class Gyro extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
       double navXYaw = getYawNavX();
+      double yawSpeed = getRate();
       SmartDashboard.putNumber("NavX Yaw", navXYaw);
+      SmartDashboard.putNumber("NavX Yaw speed", yawSpeed);
   }
 
 }
