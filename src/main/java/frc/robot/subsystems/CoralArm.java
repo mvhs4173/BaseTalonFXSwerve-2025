@@ -30,7 +30,7 @@ public class CoralArm extends SubsystemBase {
   private boolean m_isWristHorizontal;
   private double m_rollerCurrentDraw;
 
-  private final double m_WRIST_LOWER_POSITION_LIMIT =  0.00;
+  private final double m_WRIST_LOWER_POSITION_LIMIT =  -0.07;
   private final double m_WRIST_UPPER_POSITION_LIMIT = +0.25;
   private final double m_WRIST_POSITION_TOLERANCE = (2.0 / 360.0); // May need tuning 
   private double m_wristDesiredPositionRotations = 0.0;
@@ -110,7 +110,13 @@ public class CoralArm extends SubsystemBase {
   }
 
   public Command wristGoToHorizontalAndFinish(){
-    return wristGoToPositionAndFinish(0.0).withName("wristGoToHorizontal");
+    double horizontal;
+    if(m_wristPositionRotations > 0){
+      horizontal = -0.07;
+    } else {
+      horizontal = 0.0;
+    }
+    return wristGoToPositionAndFinish(horizontal).withName("wristGoToHorizontal");
   }
 
   public Command wristGoToVerticalAndFinish(){
@@ -186,6 +192,10 @@ public class CoralArm extends SubsystemBase {
 
   public boolean isWristHorizontal(){
     return Math.abs(0.0 - m_wristPositionRotations) < m_WRIST_POSITION_TOLERANCE;
+  }
+
+  public boolean isWristInLimits(){
+    return ((m_wristPositionRotations < m_WRIST_UPPER_POSITION_LIMIT) && (m_wristPositionRotations > m_WRIST_LOWER_POSITION_LIMIT));
   }
 
   public boolean isWristAtDesiredPosition(){
