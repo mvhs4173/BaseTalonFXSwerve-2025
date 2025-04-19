@@ -36,7 +36,7 @@ public class CoralArm extends SubsystemBase {
   private double m_wristDesiredPositionRotations = 0.0;
   private double m_wristPositionRotations;
 
-  private final double m_WRIST_ABS_MAX_PERCENT_SPEED = 0.10; //TODO: adjust these
+  private final double m_WRIST_ABS_MAX_PERCENT_SPEED = 0.03; //TODO: adjust these
   private double m_wristDesiredPercentSpeed = 0.0;
 
   private CoralIntakeInfo m_coralIntakeInfo;
@@ -106,12 +106,14 @@ public class CoralArm extends SubsystemBase {
 
   public Command wristGoToPositionAndFinish(double desiredPositionRotations){
     System.out.println("arg=" + desiredPositionRotations);
-    return wristGoToPositionAndHold(desiredPositionRotations).until(() -> isWristAtDesiredPosition());
+    return wristGoToPositionAndHold(desiredPositionRotations)
+      .until(() -> isWristAtDesiredPosition())
+      .finallyDo(() -> m_wristDesiredPercentSpeed = 0.0);
   }
 
   public Command wristGoToHorizontalAndFinish(){
     double horizontal;
-    if(m_wristPositionRotations > 0){
+    if(m_wristPositionRotations > 1.0/8.0){
       horizontal = -0.07;
     } else {
       horizontal = 0.0;
@@ -217,6 +219,11 @@ public class CoralArm extends SubsystemBase {
     // m_isCoralInIntake = isCoralInIntake();
     m_isWristVertical = isWristVertical();
     m_isWristHorizontal = isWristHorizontal();
+    if(m_wristPositionRotations >= m_WRIST_UPPER_POSITION_LIMIT){
+      m_wristDesiredPercentSpeed = Math.min(m_wristDesiredPercentSpeed, 0);
+    } else if (m_wristPositionRotations <= m_WRIST_LOWER_POSITION_LIMIT){
+      m_wristDesiredPercentSpeed = Math.max(m_wristDesiredPercentSpeed, 0);
+    }
     setWristPercentSpeed(m_wristDesiredPercentSpeed);
 
     SmartDashboard.putBoolean("Wrist is vertical", m_isWristVertical);
