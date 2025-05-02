@@ -36,7 +36,7 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
     /* Controllers */
     private final XboxController m_driveController = new XboxController(0);
-    private final XboxController m_armController = new XboxController(1);
+    //private final XboxController m_armController = new XboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -124,31 +124,32 @@ public class RobotContainer {
           zeroGyro.onTrue(new InstantCommand(() -> m_Swerve.zeroHeading()));
         }
         /* Start assuming the m_armController is not null */
-        JoystickButton armA = new JoystickButton(m_armController, XboxController.Button.kA.value);
+        /*JoystickButton armA = new JoystickButton(m_armController, XboxController.Button.kA.value);
         JoystickButton armB = new JoystickButton(m_armController, XboxController.Button.kB.value);
         JoystickButton armX = new JoystickButton(m_armController, XboxController.Button.kX.value);
         JoystickButton armY = new JoystickButton(m_armController, XboxController.Button.kY.value);
         JoystickButton armLeftBumper = new JoystickButton(m_armController, XboxController.Button.kLeftBumper.value);
-        JoystickButton armRightBumper = new JoystickButton(m_armController, XboxController.Button.kRightBumper.value);
+        JoystickButton armRightBumper = new JoystickButton(m_armController, XboxController.Button.kRightBumper.value);*/
         JoystickButton driveY = new JoystickButton(m_driveController, XboxController.Button.kY.value);
         JoystickButton driveB = new JoystickButton(m_driveController, XboxController.Button.kB.value);
         JoystickButton driveX = new JoystickButton(m_driveController, XboxController.Button.kX.value);
         JoystickButton driveLeftBumper = new JoystickButton(m_driveController, XboxController.Button.kLeftBumper.value);
         JoystickButton driveRightBumper = new JoystickButton(m_driveController, XboxController.Button.kRightBumper.value);
+        JoystickButton driveA = new JoystickButton(m_driveController, XboxController.Button.kA.value);
 
       //Drive buttons:
         driveY.onTrue(new InstantCommand(() -> m_Swerve.setYaw(0.0)));
-        if(m_AlgaeArm != null){
+        /*if(m_AlgaeArm != null){
           driveRightBumper.onTrue(m_AlgaeArm.extendArm());
           driveLeftBumper.onTrue(m_AlgaeArm.retractArm()); //Retracts arm and also sets the roller percent speed to zero
           driveX.whileTrue(m_AlgaeArm.rollerIntake());
           //driveX.whileFalse(m_AlgaeArm.rollerHoldAlgae());
           driveB.whileTrue(m_AlgaeArm.rollerPushOut());
-        }
+        }*/
 
       //Superstructure buttons:
       if(m_CoralManipulator != null){
-        //the following all just go to the position and do not actually score it
+        /*//the following all just go to the position and do not actually score it
         armY.onTrue(m_CoralManipulator.goToL4ScoringPosition()); //L4
         armB.onTrue(m_CoralManipulator.goToL3ScoringPosition()); //L3
         armX.onTrue(m_CoralManipulator.goToL2ScoringPosition()); //L2
@@ -160,7 +161,15 @@ public class RobotContainer {
         new Trigger(() -> m_armController.getPOV() == 180) //south
           .onTrue(m_CoralManipulator.dropToScoreOnReef());
         new Trigger(() -> m_armController.getPOV() == 0) //north
-          .onTrue(m_CoralManipulator.goToHome());
+          .onTrue(m_CoralManipulator.goToHome());*/
+
+        //For parade we only want one controller, and not to go higher than l1. 
+
+        driveRightBumper.onTrue(m_CoralManipulator.goToL1TroughScoringPosition());
+        driveLeftBumper.onTrue(m_CoralManipulator.goToHome());
+        driveB.onTrue(m_CoralManipulator.wristGoToDiagonal());
+        driveX.onTrue(m_CoralManipulator.wristGoToHorizontal());
+        driveA.onTrue(m_CoralManipulator.wristGoToVertical());
       }
     }
 

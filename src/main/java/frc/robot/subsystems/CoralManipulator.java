@@ -54,6 +54,18 @@ public class CoralManipulator extends SubsystemBase {
     ).withName("Collect Coral command");
   }
 
+  public Command wristGoToDiagonal(){
+    return m_CoralArm.wristGoToDiagonalDownAndFinish().withTimeout(10);
+  }
+
+  public Command wristGoToHorizontal(){
+    return m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(10);
+  }
+
+  public Command wristGoToVertical(){
+    return m_CoralArm.wristGoToVerticalAndFinish().withTimeout(10);
+  }
+
   /*go to L4 position, extend arm, rotate arm
     */
     public Command goToL4ScoringPosition(){
