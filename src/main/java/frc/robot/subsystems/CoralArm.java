@@ -21,7 +21,7 @@ public class CoralArm extends SubsystemBase {
   private final SparkMaxMotor m_rollerMotor;
   private final OnOffSwitch m_CoralDetectionSensor;
 
-  private final double m_ROLLER_INWARD_PERCENT_SPEED =  -0.35; 
+  private final double m_ROLLER_INWARD_PERCENT_SPEED =  -0.50; 
   private final double m_ROLLER_OUTWARD_PERCENT_SPEED = +0.35; 
 
   private boolean m_isExtended = false;
@@ -36,7 +36,7 @@ public class CoralArm extends SubsystemBase {
   private double m_wristDesiredPositionRotations = 0.0;
   private double m_wristPositionRotations;
 
-  private final double m_WRIST_ABS_MAX_PERCENT_SPEED = 0.03; //TODO: adjust these
+  private final double m_WRIST_ABS_MAX_PERCENT_SPEED = 0.10; //TODO: adjust these
   private double m_wristDesiredPercentSpeed = 0.0;
 
   private CoralIntakeInfo m_coralIntakeInfo;
@@ -138,7 +138,7 @@ public class CoralArm extends SubsystemBase {
     CoralIntakeInfo(){
       hasHitCruisingSpeed = false;
       hasHitHighCurrent = false;
-      debouncer = new Debouncer(0.1);
+      debouncer = new Debouncer(0.10);
     }
   }
 

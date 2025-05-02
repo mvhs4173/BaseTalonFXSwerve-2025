@@ -136,7 +136,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        /*swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         m_field.setRobotPose(getPose());
         for(SwerveModule mod : mSwerveMods){
@@ -145,6 +145,6 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
             SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Drive Current", mod.getDriveCurrent());
             SmartDashboard.putNumber("Mod" + mod.moduleNumber + "Angle Current", mod.getAngleCurrent());    
-        }
+        }*/
     }
 }

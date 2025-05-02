@@ -22,10 +22,10 @@ public class CoralManipulator extends SubsystemBase {
    go to safe extension position, retract
    for the purpose of grabbing a horizontal-laying coral on the floor directly in front of the robot*/
   public Command collectCoral(){
-    Command safeToExtArmPose = m_Elevator.goToSafeToExtendPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(2));
+    Command safeToExtArmPose = m_Elevator.goToSafeToExtendPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(5));
     Command ExtendArm = m_CoralArm.armExtend().andThen(Commands.waitSeconds(1));
-    Command WristHorizontal = m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(2);
-    Command LowerElevator = m_Elevator.goToCollectionPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(2));
+    Command WristHorizontal = m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(5);
+    Command LowerElevator = m_Elevator.goToCollectionPosition().andThen(Commands.waitUntil(()->m_Elevator.isCloseToDesiredPosition()).withTimeout(5));
     Command RollIntake = m_CoralArm.rollerIntake().until(()->m_CoralArm.isCoralInIntake()).withTimeout(5);
     return Commands.sequence(
     CommandLogger.logCommand(safeToExtArmPose, "safeToExtArmPose"),
@@ -58,9 +58,9 @@ public class CoralManipulator extends SubsystemBase {
     */
     public Command goToL4ScoringPosition(){
       return Commands.sequence(
-        m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
-        m_CoralArm.armExtend().withTimeout(2.0),
-        m_CoralArm.wristGoToVerticalAndFinish().withTimeout(2.0)
+        m_Elevator.goToL4Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(10),
+        m_CoralArm.armExtend().withTimeout(10),
+        m_CoralArm.wristGoToVerticalAndFinish().withTimeout(10)
       ).withName("L4");
     }
 
@@ -68,9 +68,9 @@ public class CoralManipulator extends SubsystemBase {
     */
   public Command goToL3ScoringPosition(){
     return Commands.sequence(
-      m_Elevator.goToL3Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
-      m_CoralArm.armExtend().withTimeout(2.0),
-      m_CoralArm.wristGoToVerticalAndFinish().withTimeout(2.0)
+      m_Elevator.goToL3Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(10),
+      m_CoralArm.armExtend().withTimeout(10),
+      m_CoralArm.wristGoToVerticalAndFinish().withTimeout(10)
     ).withName("L3");
   }
 
@@ -78,18 +78,18 @@ public class CoralManipulator extends SubsystemBase {
     */
   public Command goToL2ScoringPosition(){
     return Commands.sequence(
-      m_Elevator.goToL2Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
-      m_CoralArm.armExtend().withTimeout(2.0),
-      m_CoralArm.wristGoToVerticalAndFinish().withTimeout(2.0)
+      m_Elevator.goToL2Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(10),
+      m_CoralArm.armExtend().withTimeout(10),
+      m_CoralArm.wristGoToVerticalAndFinish().withTimeout(10)
     ).withName("L2");
   }
 
   /*go to L1 position, extend arm -- wrist rotation not neccesary because it is the trough*/
   public Command goToL1TroughScoringPosition(){
     return Commands.sequence(
-      m_Elevator.goToL1Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(3.0),
-      m_CoralArm.armExtend().withTimeout(2.0),
-      m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(2.0)
+      m_Elevator.goToL1Position().until(() -> m_Elevator.isCloseToDesiredPosition()).withTimeout(10),
+      m_CoralArm.armExtend().withTimeout(10),
+      m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(10)
     ).withName("L1");
   }
 
@@ -109,7 +109,7 @@ public class CoralManipulator extends SubsystemBase {
 
   public Command goToHome(){
     return Commands.sequence(
-      m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(2.0),
+      m_CoralArm.wristGoToHorizontalAndFinish().withTimeout(10),
       m_CoralArm.armRetract(),
       m_Elevator.goToHomePosition()
     ).withName("goHome");

@@ -27,13 +27,13 @@ public class Elevator extends SubsystemBase {
   private double m_desiredPercentSpeed = 0.0;
   private final double m_SAFETOEXTENDPOSITION = (m_homePosition + 2);
   private final double m_ELEVATOR_POSITION_OFFSET = 16;
-  private final double m_COLLECTIONPOSITION = -20 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_COLLECTIONPOSITION = -17 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_L1POSITION = 3.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
-  private final double m_L2POSITION = 22.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
-  private final double m_L3POSITION = 37.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_L2POSITION = 19.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_L3POSITION = 33.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_L4POSITION = 59.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_UPPERHEIGHTLIMIT = 60.0 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
-  private final double m_LOWERHEIGHTLIMIT = -16.5 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
+  private final double m_LOWERHEIGHTLIMIT = -20.5 + m_ELEVATOR_POSITION_OFFSET; //TODO: adjust these
   private final double m_DISTANCETOLOWERTOSCORE = 10.0; //TODO: adjust these
   private double m_distanceToDesiredPosition;
 
